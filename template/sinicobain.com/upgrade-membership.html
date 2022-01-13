@@ -1,0 +1,59 @@
+{% extends "template.html" %}
+{% block pagetitle %}{{ LANG.point }} | {{ parent() }}{% endblock %}
+{% block JS %}
+<script type="text/javascript" src="{{ TEMPLATE_JS_PAGE_PATH }}upgrade-membership.min.js"></script>
+<script type="text/javascript">
+jQuery(document).ready(function(){  
+ var upgradeMembership = new UpgradeMembership();
+ upgradeMembership.loadOnReady();   
+ {{ JSScript|raw }} 
+})
+</script>
+{% endblock %}
+{% block content %}
+{% set bannerIndex = banner['point'][0] %}
+<div class="banner banner-content" style="background-image:url('/phpthumb/phpThumb.php?src={{ PHPTHUMB_URL_SRC }}banner/{{ bannerIndex.pkey }}/{{ bannerIndex.file }}&f=png&hash={{ bannerIndex.phpThumbHash }}')">
+<div class="content-wrapper">
+<div class="div-table banner-text-panel">
+    <div class="div-table-row">
+        <div class="div-table-col" style="vertical-align: middle; height: 100%">
+            <div class="simple-parallax fade-up">{{ bannerIndex.trdesc|raw }}</div>
+        </div>
+    </div>
+</div>
+</div>    
+</div>  
+<div class="content-wrapper"> 
+	<div class="div-table profile-submenu" style="width:100%">
+		<div class="div-table-row">
+			<div class="div-table-col side-menu">
+				{{ macro.buildProfileSubmenu(_context) }}
+			</div>
+			<div class="div-table-col"> 
+			<div style="clear: both; height: 1em"></div>  
+				{% if nextMembershipLevel is empty %}
+					
+				{% else %}
+				<form id="mnv-upgrade-membership" class="form-horizontal prevent-form-submit" action="/ajax-member.php">
+					{{ inputHidAction|raw }}{{ inputHidUsePoint|raw }}
+					<div class="notification-msg"></div>
+					<div style="text-align: center; font-size: 1.2em">
+						Upgrade membership menjadi <b>{{ nextMembershipLevel.name }}</b><br>Rp. {{ nextMembershipLevel.sellingprice|number_format }} / tahun
+						{% if canUsePoint == 0 %}
+							<br><br>
+							<div class="text-red-cardinal" style="text-align: center">Anda harus memiliki minimal <b>{{ minimumPoint }} poin</b> untuk dapat menggunakan poin Anda.</div>
+						{% endif %} 
+					</div>
+				<div style="clear:both; height: 4em"></div>
+				<div style="text-align: center; width: 100%">
+					{{ btnTradePoint|raw }}&nbsp;&nbsp;&nbsp;{{ btnPurchase|raw }}
+				 </div>
+				</form> 
+				{% endif %}
+			</div>		
+			</div>
+		</div>
+</div>  
+
+<div style="clear: both; height: 5em"></div>    
+{% endblock %}

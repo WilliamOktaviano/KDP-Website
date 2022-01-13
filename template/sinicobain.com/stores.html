@@ -1,0 +1,47 @@
+{% extends "template.html" %}
+{% block pagetitle %}{{ LANG.stores }} | {{ parent() }}{% endblock %}
+
+{% block content %}
+{% set bannerIndex = banner['stores'][0] %}
+<div class="banner banner-content" style="background-image:url('/phpthumb/phpThumb.php?src={{ PHPTHUMB_URL_SRC }}banner/{{ bannerIndex.pkey }}/{{ bannerIndex.file }}&f=png&hash={{ bannerIndex.phpThumbHash }}')">
+<div class="content-wrapper">
+<div class="div-table banner-text-panel">
+    <div class="div-table-row">
+        <div class="div-table-col" style="vertical-align: middle; height: 100%">
+            <div class="simple-parallax fade-up">{{ bannerIndex.trdesc|raw }}</div>
+        </div>
+    </div>
+</div>
+</div>    
+</div>  
+<div class="content-wrapper">    
+<!-- The div to hold the map -->
+<div class="div-table stores-table">
+    <div class="div-table-row">
+        <div class="div-table-col-3 list-col">
+            <ul class="store-list">
+                {% for data in rsStores %}
+                <li rellatlng="{{ data.location }}" relkey="{{ data.pkey }}">
+                    <div class="name">{{ data.name }}</div>
+                    <div class="address">{{ data.address|raw }}</div>
+                    <div class="direction">{{ LANG.direction }}</div>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+        <div class="div-table-col-3 map-col"><div id="map"></div></div> 
+    </div>
+</div>
+<div style="clear:both;height: 5em"></div>
+<script async defer src="https://maps.googleapis.com/maps/api/js?key={{ settings.mapAPIKey }}&libraries=places&callback=initMap"></script>
+<script type="text/javascript" src="{{ TEMPLATE_JS_PATH }}gmap.min.js"></script>
+<script type="text/javascript" src="{{ TEMPLATE_JS_PAGE_PATH }}stores.min.js"></script> 
+
+<script type="text/javascript">
+function initMap(){
+var stores = new Stores({'mapObj':$("#map"),'location' : {{ location|raw }} });    
+stores.loadOnReady();    
+}
+</script> 
+</div>
+{% endblock %}

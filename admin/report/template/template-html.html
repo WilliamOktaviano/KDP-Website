@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"> 
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>{% block pagetitle %}{{ arrTemplate.reportTitle }}{% endblock %}</title> 
+<link rel=apple-touch-icon sizes=180x180 href="../../include/img/ico/apple-touch-icon.png">
+<link rel=icon type=image/png sizes=32x32 href="../../include/img/ico/favicon-32x32.png">
+<link rel=icon type=image/png sizes=16x16 href="../../include/img/ico/favicon-16x16.png">
+<link rel="stylesheet" type="text/css" href="{{ TEMPLATE_CSS_PATH }}jquery-ui.min.css" />    
+<link rel="stylesheet" type="text/css" href="{{ TEMPLATE_CSS_PATH }}bootstrap.css"/>
+<link rel="stylesheet" type="text/css" href="{{ TEMPLATE_CSS_PATH }}scrollToTop.css"/>
+<!--<link rel="stylesheet" type="text/css" href="{{ TEMPLATE_CSS_PATH }}easing.css"/> -->
+<link rel="stylesheet" type="text/css" href="{{ TEMPLATE_CSS_PATH }}font-awesome-5.15.min.css">
+<link rel="stylesheet" type="text/css" href="{{ TEMPLATE_CSS_PATH }}sol.css"/>   
+<link rel="stylesheet" type="text/css" href="{{ TEMPLATE_CSS_PATH }}{{ ADMIN_CSS_VERSION }}">  
+<link rel="stylesheet" type="text/css" href="{{ TEMPLATE_CSS_PATH }}responsive.css">  
+{% block CSS %}{% endblock %}
+
+<script>
+    var autoLoad = {% if autoLoad is empty %} 1 {% else %} {{ autoLoad }} {% endif %} ;
+    var FIXED_COLUMN = false; 
+</script>
+<script type="text/javascript" src="{{ TEMPLATE_JS_PATH }}jquery-3.3.1.min.js"></script>     
+<script type="text/javascript" src="{{ TEMPLATE_JS_PATH }}bootstrapValidator.js"></script>    
+<script type="text/javascript" src="{{ TEMPLATE_JS_PATH }}jquery-ui.min.js"charset="utf-8"></script>   
+<script type="text/javascript" src="{{ TEMPLATE_JS_PATH }}jquery.formatCurrency-1.4.0.min.js" ></script>  
+<script type="text/javascript" src="{{ TEMPLATE_JS_PATH }}jquery-scrollToTop.js"></script> 
+<script type="text/javascript" src="{{ TEMPLATE_JS_PATH }}sol.js"></script>  
+<script type="text/javascript" src="{{ TEMPLATE_JS_PATH }}report-2.9.min.js"></script>    
+
+{% block JS %}{% endblock %}
+</head> 
+<body>  
+<div class="report" >
+    
+    <div class="div-table report-table" > 
+        <div class="div-table-row">
+                    <div class="div-table-col criteria-panel hide-on-print"> 
+                       <div style="width: 100%; height: 100%;">
+                        <form  id="filterForm" action="{{ SELF_PAGE }}" class="form-horizontal" method="post"> 
+                            <div style="display: flex; flex-direction: column; height: 100vh; margin: auto; ">
+                            {{ INPUT_HID_ORDER_BY|raw }} {{ INPUT_HID_ORDER_TYPE|raw }}  {{ INPUT_HID_ONSUBMIT|raw }} {{ INPUT_HID_EXPORT|raw }} {{ INPUT_HID_FILE_DATA|raw }}
+                            <!-- <div class="title" >Filter</div> -->
+                            <div style="flex:1; overflow: scroll; overflow-x: hidden; width: 100%; margin: auto" >
+                               <div style="padding: 0.5em 1em">{% block filter %}{% endblock %}</div> 
+                            </div> 
+                            <div style="padding: 0.5em; background-color: #ccc">{{ INPUT_SUBMIT|raw }}</div>
+                           </div>
+                        </form> 
+                     </div>  
+                    </div>
+                    <div class="div-table-col data-panel">
+
+                         <div class="report-content">
+                            <div>
+                                <ul class="menu hide-on-print">
+                                    <li class="toogle-criteria"><i class="far fa-filter"></i> Filter</li>
+                                    <li class="print-report"><i class="far fa-print"></i> Print</li> 
+                                    <li class="export-template" reltype="2"><i class="fas fa-file-import"></i> {{ LANG.exportTemplate }}</li>
+                                    {% if not exportExcel is defined or exportExcel %}    
+                                    <li class="export-excel bg-green-excel" reltype="1"><i class="download-icon far fa-download"></i><i class="check-icon fas fa-check"></i> {{ LANG.exportExcel }}</li>
+                                    {% endif %}
+                                    <div style="clear:both; height:1em;"></div> 
+                                </ul>  
+                                <div class="company-name">{{ settings.companyName }}</div> 
+                                <div class="title">{% block reporttitle %}{{ arrTemplate.reportTitle }}{% endblock %}</div>  
+                                <div class="filter-information"></div> 
+                                <span class="btn-link show-filter-information hide-on-print" rel="{{ LANG.showDetail }}">{{ LANG.hideDetail }}</span>
+                                <div style="clear:both; height:1em;"></div> 
+                            </div>  
+                            <div> 
+                                {% block reportContent %}{% endblock %} 
+                             </div>   
+                       </div> 
+
+                    </div>   
+                 
+        </div>
+    </div>  
+	 
+</div>
+<div id="back-to-top"></div>
+</body>
+
+</html>
+

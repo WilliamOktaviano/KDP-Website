@@ -1,0 +1,139 @@
+{% extends "template.html" %}
+{% block pagetitle %}{{ LANG.careers }} | {{ parent() }}{% endblock %}
+
+
+{% block CSS %}
+<link rel="stylesheet" type="text/css" href="{{ TEMPLATE_CSS_PATH }}slick.css">
+<link rel="stylesheet" type="text/css" href="{{ TEMPLATE_CSS_PATH }}slick-theme.css">
+{% endblock %}
+ 
+{% block JS %} 
+<script type="text/javascript" src="{{ TEMPLATE_JS_PAGE_PATH }}job-opportunities.min.js"></script>
+<script type="text/javascript" src="{{ TEMPLATE_JS_PATH }}slick.min.js"></script>
+<script type="text/javascript">
+jQuery(document).ready(function(){  
+ var opt = new Array();      
+ opt['selectedCategoryKey'] = {{ categoryKey }};
+ opt['selectedCategoryName'] = "{{ categoryName|urlfilter }}";
+ var jobOpportunities = new JobOpportunities(opt);
+ jobOpportunities.loadOnReady(); 
+})
+</script>
+<!--<script src='https://www.google.com/recaptcha/api.js'></script>-->
+{% endblock %} 
+
+{% block content %}
+{% set bannerIndex = banner['career'][0] %}
+<div class="banner banner-content" style="background-image:url('/phpthumb/phpThumb.php?src={{ PHPTHUMB_URL_SRC }}banner/{{ bannerIndex.pkey }}/{{ bannerIndex.file }}&f=png&hash={{ bannerIndex.phpThumbHash }}')">
+<div class="content-wrapper">
+<div class="div-table banner-text-panel">
+    <div class="div-table-row">
+        <div class="div-table-col" style="vertical-align: middle; height: 100%">
+            <div class="simple-parallax fade-up">{{ bannerIndex.trdesc|raw }}</div>
+        </div>
+    </div>
+</div>
+</div>    
+</div>  
+<div class="content-wrapper">
+    <div class="work-here-panel" style="padding:3em 0 4em 0">
+        <div class="subtitle">Why Work Here?</div>
+        <div class="div-table work-here-table">
+            <div class="div-table-row">
+                <div class="div-table-col description"> 
+                    <div>  {{ page.whyworkwithus.detail|raw }} </div>
+                </div>
+                <div class="div-table-col content-video"> 
+                 <iframe border="0" src="https://drive.google.com/file/d/1mzybJDU_sQsGzzctzX7ISUohvet0PoDO/preview" width="400" height="280" allow="autoplay"></iframe>
+                </div>
+            </div>
+        </div>
+    </div>
+ <div style="clear: both; height: 2em"></div>      
+<div style="text-align: center"><a class="link user-select-none" href="https://recruitment.talenta.co/kenaridjaja" target="_blank">{{ LANG.applyJobHere|upper }}</a></div>
+<div style="clear: both; height: 3em"></div>
+
+<!--   
+    <div class="join-us-panel"> 
+        <div style="clear: both; height: 5em"></div>      
+        <div class="job-position-panel">
+            <div class="subtitle" style=" color: #ff0045 ">{{ LANG.currentOpening }}</div>
+            <ul class="job-position-list">
+                {% for row in rsJobField if row.totalposition > 0 %}
+                <li> 
+                        <a href="/careers-list/?jobfieldkey={{ row.pkey }}">
+                        <div class="content-panel jobfield-image" style="background-image:url('/phpthumb/phpThumb.php?src={{ PHPTHUMB_URL_SRC }}career-field/{{ row.pkey }}/{{ row.file }}&hash={{ row.phpThumbHash }}')">
+                                <div class="overlay"></div>
+                                <div class="div-table desc-panel">
+                                    <div class="div-table-row">
+                                        <div class="div-table-col" style="vertical-align: middle">  
+                                                <div class="jobfield-name">{{ row.name }}</div> 
+                                                <div class="total-position">{{ row.totalposition }} Position(s)</div> 
+                                        </div>
+                                    </div>
+                                </div>
+                        </div> 
+                        </a> 
+                </li>
+                {% endfor %}  
+
+            </ul>
+        </div>
+    </div>
+    <div style="clear: both; height: 7em"></div>  
+-->
+    <ul class="career-category-list" >
+    {% for data in rsCategoryCareer %}
+        <li>
+            <div class="content-panel auto-height">
+            <div class="image-panel" alt="{{ data.name }}" style="background-image:url('/phpthumb/phpThumb.php?src={{ PHPTHUMB_URL_SRC }}category/{{ data.pkey }}/{{ data.file }}&hash={{ data.phpThumbHash }}')"></div>
+            <div class="information">
+            <div class="career-name"><a href="/careers-list/?categorykey={{ data.pkey }}">{{ data.name|raw }}</a></div>
+            <div class="career-desc">{{ data.shortdescription|raw }}</div>
+            </div>
+            </div>
+        </li>
+    {% endfor %}  
+    </ul>
+    <div style="clear: both; height: 4em"></div>  
+    <div class="testimonial">   
+    <div class="subtitle">Working at Kenari Djaja</div>
+    <div style="clear: both; height: 1em"></div>  
+        <ul class="testimonial-list">
+        {% for data in rsRandTestimonial %}
+        <li>
+            <div class="content-panel auto-height">
+              <div class="image-panel"><div class="image" style="background-image:url('/phpthumb/phpThumb.php?src={{ PHPTHUMB_URL_SRC }}testimonial/{{ data.pkey }}/{{ data.file }}&f=png&hash={{ data.phpThumbHash }}')">&nbsp;</div></div>
+              <div class="name-panel">
+                  <div class="name">{{ data.name|upper|raw }}</div>
+                  <div class="position">{{ data.position }}</div>
+                </div> 
+               <div class="review-panel">{{ data.review }}</div>
+            </div>    
+        </li>  
+        {% endfor %}  
+        </ul>
+        <div style="clear: both; height: 4em"></div>
+    </div>   
+    <div class="gallery-category">   
+    <div class="subtitle">{{ LANG.ourActivities }}</div>
+    <div style="clear: both; height: 1em"></div>  
+        <ul class="gallery-category-list">
+        {% for data in rsGalleryHRCategory %}
+        <li>
+            <div class="content-panel auto-height">
+                <a href="/gallery-hr/{{ data.name|urlfilter }}/{{ data.pkey }}">
+                <div class="image-panel" style="background-image:url('/phpthumb/phpThumb.php?src={{ PHPTHUMB_URL_SRC }}gallery-category/{{ data.pkey }}/{{ data.file }}&f=png&hash={{ data.phpThumbHash }}')">&nbsp;</div>
+                <div class="name-panel">
+                  <div class="name">{{ data.name|upper|raw }}</div> 
+                </div> 
+                </a>
+            </div>    
+        </li>  
+        {% endfor %}  
+        </ul>
+        <div style="clear: both; height: 4em"></div>
+    </div>  
+</div>
+<div style="clear: both; height: 5em"></div>    
+{% endblock %}

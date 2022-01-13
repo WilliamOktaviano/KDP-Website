@@ -1,0 +1,33 @@
+{% extends "template.html" %}
+{% block pagetitle %}{{ LANG.catalogs }} | {{ parent() }}{% endblock %}
+
+{% block content %}
+{% set bannerIndex = banner['catalog'][0] %}
+<div class="banner banner-content" style="background-image:url('/phpthumb/phpThumb.php?src={{ PHPTHUMB_URL_SRC }}banner/{{ bannerIndex.pkey }}/{{ bannerIndex.file }}&f=png&hash={{ bannerIndex.phpThumbHash }}')">
+<div class="content-wrapper">
+<div class="div-table banner-text-panel">
+    <div class="div-table-row">
+        <div class="div-table-col" style="vertical-align: middle; height: 100%">
+            <div class="simple-parallax fade-up">{{ bannerIndex.trdesc|raw }}</div>
+        </div>
+    </div>
+</div>
+</div>    
+</div>  
+<div class="content-wrapper">    
+    
+<ul class="download-list"> 
+    {% for data in rsDownload %}
+    <li>
+        <div class="content-panel auto-height">
+        <a href="{{ data.filelist[0].filelink }}" title="{{ data.name }}" target="_blank">
+            <div class="image" alt="{{ data.name }}" style="background-image:url('/phpthumb/phpThumb.php?src={{ PHPTHUMB_URL_SRC }}download-image/{{ data.pkey }}/{{ data.file }}&hash={{ data.phpThumbHash }}')"></div>
+        </a> 
+        <div class="name">{{ data.name }}</div>    
+        </div> 
+    </li> 
+    {% endfor %}  
+</ul>   
+    
+{{ macro.buildPageList(_context,'download-list/') }}
+{% endblock %}

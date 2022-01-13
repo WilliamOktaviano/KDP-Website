@@ -1,0 +1,61 @@
+<div class="dummy-col-header hide-on-print" > 
+      {% for key,el in arrTemplate.dataStructure|slice(0,2) %}  
+
+        {% set rowAttr = generate_report_row_attr(arrTemplate.dataStructure, key,order) %}
+
+        {% set freezePaneClass = "" %} 
+        {% if loop.index == 2 %}
+            {% set freezePaneClass = "freeze-pane-border" %} 
+        {% endif %}
+
+        <div  class="{{ rowAttr.class|raw }} {{ freezePaneClass }}  dummy-td"  style="float:left;  {{ rowAttr.style|raw }}" relcol="{{ el.dbfield }}" reltype="{{ rowAttr.orderType }}">{{ el.title|raw }} {{ rowAttr.orderIcon|raw }}</div>
+
+     {% endfor %}        
+</div>
+<table class="main-table" style="width: 100%;"> 
+     <thead> 
+        {% set rowspan = "" %}   
+
+        {% set hasGroup = false %}     
+        {% for el in arrTemplate.dataStructure %} 
+            {% if  el.group is defined  %}
+                {% set hasGroup = true %}  
+                {% set rowspan = 'rowspan=2' %}  
+            {% endif  %} 
+        {% endfor %} 
+
+         <tr class="table-header">  
+
+            {% for key,el in arrTemplate.dataStructure %} 
+
+             {% if not el.group is defined  %}
+               {% set rowAttr = generate_report_row_attr(arrTemplate.dataStructure, key,order) %} 
+               <th {{ rowspan }} style="{{ rowAttr.style|raw }}"  class="{{ rowAttr.class|raw }}" relcol="{{ el.dbfield }}" reltype="{{ rowAttr.orderType }}">{{ el.title|raw }} {{ rowAttr.orderIcon|raw }}</th>
+             {% else %}
+               {% set colHeaderAttr = generate_report_group_header_attr(arrTemplate.dataStructure, key) %}
+                {% if colHeaderAttr.firstOfGroup %}
+                    <th {{ colHeaderAttr.colspan|raw }} class="header-group-bl" style="text-align:center; {{ colHeaderAttr.totalWidth|raw }}"><div class="group-col-header">{{ el.group|upper|raw }}</div></th>
+                {% endif %}   
+             {% endif %}   
+             
+            {% endfor %}      
+
+            <th {{ rowspan }} style="" class="dummy-grow-col"></th> 
+         </tr>  
+
+
+       {% if hasGroup %}    
+            <tr class="table-header">  
+                {% for key,el in arrTemplate.dataStructure %}   
+                  {% if el.group is defined  %}
+                    {% set rowAttr = generate_report_row_attr(arrTemplate.dataStructure, key, order) %}
+                        <th style="{{ rowAttr.style|raw }}"  class="{{ rowAttr.class|raw }}">{{ el.title|raw }}</th>
+                    {% endif %}   
+                {% endfor %}   
+            </tr>     
+        {% endif %}  
+
+        </thead>
+    <tbody>
+    </tbody>
+</table>

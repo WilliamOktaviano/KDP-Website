@@ -1,0 +1,37 @@
+{% extends "template.html" %}
+{% block CSS %}
+<link rel="stylesheet" type="text/css" href="{{ TEMPLATE_CSS_PATH }}ekko-lightbox.min.css"> 
+{% endblock %}
+{% block dfLoadFiles %} 
+    ["{{ TEMPLATE_JS_PATH }}ekko-lightbox.min.js"],
+{% endblock %} 
+
+{% block JSOnLoad %} 
+    $(document).on('click', '[data-toggle="lightbox"]', function(event) {
+        event.preventDefault(); 
+        $(this).ekkoLightbox(); 
+    }); 
+{% endblock %} 
+
+{% block pagetitle %}{{ LANG.portfolio}} | {{ parent() }}{% endblock %}
+{% block content %}
+{% set bannerIndex = banner['portfolio'][0] %}
+<div class="banner banner-content" style="background-image:url('/phpthumb/phpThumb.php?src={{ PHPTHUMB_URL_SRC }}banner/{{ bannerIndex.pkey }}/{{ bannerIndex.file }}&f=png&hash={{ bannerIndex.phpThumbHash }}')">
+<div class="content-wrapper">
+<div class="div-table banner-text-panel">
+    <div class="div-table-row">
+        <div class="div-table-col" style="vertical-align: middle; height: 100%">
+            <div class="simple-parallax fade-up">{{ bannerIndex.trdesc|raw }}</div>
+        </div>
+    </div>
+</div>
+</div>    
+</div>  
+<div class="content-wrapper"> 
+<ul class="client-list" style="padding: 2em 0">
+{% for row in rsAllGallery %}     
+    <li><div class="content-panel" style="background-image:url('/phpthumb/phpThumb.php?src={{ PHPTHUMB_URL_SRC }}gallery/{{ row.pkey }}/{{ row.mainimage }}&hash={{ row.phpThumbHash }}')"></div></li> 
+{% endfor %}   
+</ul>
+    
+{% endblock %}

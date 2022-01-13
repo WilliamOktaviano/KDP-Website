@@ -1,0 +1,35 @@
+{% extends "template.html" %}
+{% block pagetitle %}{{ LANG.faq }} | {{ parent() }}{% endblock %} 
+{% block content %}  
+ 
+<div class="content-panel">
+<div class="content-wrapper"> 
+<div class="subsec-01"></div>
+<div class="title">Common Inquiries</div>
+<div class="tag">Quick Answers</div> 
+<div style="clear: both;height: 2em"></div>   
+ 
+<div class="index-panel">
+<ul class="faq-index">
+    {% for data in rsFAQ %} 
+    <li style="list-style-image: url('{{ TEMPLATE_IMG_PATH }}numbering-{{ random(['1', '2', '3']) }}.png');"><a href="#{{ data.pkey }}"><div class="question">{{ data.question }}</div> </a> </li>
+    {% endfor %}  
+</ul>     
+</div>
+</div>
+    
+<div class="asnwer-panel">
+<div class="content-wrapper"> 
+<ul class="faq-detail">
+{% for data in rsFAQ %} 
+    <li id="{{ data.pkey }}"> 
+    <div class="question">{{ data.question }}</div>
+    <div class="answer">{{ data.answer|raw }}</div>
+    </li>    
+{% endfor %}  
+</ul>      
+</div>
+</div>    
+</div> 
+<div style="clear: both;"></div>
+{% endblock %}

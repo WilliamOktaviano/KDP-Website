@@ -1,0 +1,29 @@
+RewriteEngine Off
+RewriteEngine On
+Options -Indexes
+ 
+RewriteCond %{HTTP:Authorization} ^(.*)
+RewriteRule .* - [e=HTTP_AUTHORIZATION:%1]
+
+RewriteCond %{SERVER_PORT} 443
+ 
+RewriteBase /api/v3/ 
+
+RewriteRule ^print/(.*)$ print.php?$1 [NC,L]
+RewriteRule ^([\w-]+)/cancel$ $1.php?_mnv-cancel=1 [NC,L]
+RewriteRule ^([\w-]+)/change-status/([0-9]+)$ $1.php?_mnv-change-status=$2 [NC,L]
+
+RewriteRule ^([\w-]+)/(.*)$ $1.php?$2 [NC,L]
+
+#ini salah rules kayanya
+#RewriteCond %{REQUEST_FILENAME} !-d 
+#RewriteCond %{REQUEST_FILENAME}\.php -f  
+#RewriteRule ^(.*)/status$ $1.php?_mnv-change-status=1 [NC,L]
+
+#RewriteCond %{REQUEST_FILENAME} !-d 
+#RewriteCond %{REQUEST_FILENAME}\.php -f  
+#RewriteRule ^(.*)/(.*)$ $1.php?$2 [NC,L]
+
+RewriteCond %{REQUEST_FILENAME} !-d 
+RewriteCond %{REQUEST_FILENAME}\.php -f  
+RewriteRule ^(.*)$ $1.php [NC,L]

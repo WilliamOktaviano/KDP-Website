@@ -1,0 +1,83 @@
+<div id="invoice-template">   
+<h2>
+<div style="text-align: center;">{{ LANG.upgradeMembership|upper }}</div> 
+</h2>    
+<div style="clear:both; height: 3em"></div>     
+<div class="div-table invoice-header" style="width: 100%; margin-bottom:1em"> 
+<div class="div-table-row"> 
+<div class="div-table-col-3"> 
+    <div class="div-table" style="width:100%">
+    <div class="div-table-row">
+    <div class="div-table-col-3 row-header" style="width:8em;font-weight:bold">{{ LANG.name }}</div>
+    <div class="div-table-col-3">{{ customerName|raw }}</div>
+    </div> 
+    </div>  
+</div> 
+<div class="div-table-col-3" style="width: 30%"> 
+    <div class="div-table"  style="width:100%">
+        <div class="div-table-row">
+        <div class="div-table-col-3  row-header"  style="width:8em;font-weight:bold">{{ LANG.invoiceDate }}</div>
+        <div class="div-table-col-3">{{ trdate|date("d M Y") }}</div>
+        </div>  
+        <div class="div-table-row">
+        <div class="div-table-col-3" style="font-weight:bold">{{ LANG.status }}</div>
+        <div class="div-table-col-3">{{ statusname }}</div>
+        </div>
+    </div>    
+</div> 
+   
+</div>  
+</div>
+<div style="clear: both; height: 2em"></div>  
+<div class="div-table basic-table-01">
+<div class="div-table-row col-header" style="font-weight: bold; background-color: #dedede"> 
+<div class="div-table-col-5 col-header" style="text-align:left">{{ LANG.description }}</div>  
+<div class="div-table-col-5 col-header" style="text-align:right;width:150px; border-radius: 0 0.3em 0.3em 0">{{ LANG.subtotal }}</div>
+</div>
+<div class="div-table-row transaction-row"> 
+<div class="div-table-col-5 mnv-item-name name-col" style="vertical-align:top;text-align:left">{{ LANG.membership }} - {{ servicename }}</div>
+<div class="div-table-col-5 table-col-mode" style="text-align:right;vertical-align:top">{{ subtotal|number_format }}</div>
+</div>  
+</div> 
+<div class="div-table subtotal-table" style="width:100%; border-top:1px solid #666">
+<div class="div-table-row subtotal-row no-odd-even-style">
+<div class="div-table-col-5 mobile-footer-subtotal-label col-footer-t" style="text-align:right;font-weight:bold">{{ LANG.subtotal|upper }}</div>
+<div class="div-table-col-5 mobile-footer-subtotal-value col-footer-t" style="width:150px;text-align:right;font-weight:bold">{{ subtotal|number_format }}</div>
+<div class="show-mobile row-break"></div>
+</div> 
+	
+{% for voucher in rsVoucher %}
+<div class="div-table-row subtotal-row no-odd-even-style">
+<div class="div-table-col-5 mobile-footer-subtotal-label col-footer-t" style="text-align:right;font-weight:bold">{{ voucher.code|upper }}</div>
+<div class="div-table-col-5 mobile-footer-subtotal-value col-footer-t" style="width:150px;text-align:right;font-weight:bold">-{{ voucher.amount|number_format }}</div>
+<div class="show-mobile row-break"></div>
+</div>
+{% endfor %}
+	
+{% if taxValue != 0 %}
+<div class="div-table-row subtotal-row no-odd-even-style">
+<div class="div-table-col-5 mobile-footer-subtotal-label col-footer-t" style="text-align:right;font-weight:bold">{{ LANG.dpp|upper }}</div>
+<div class="div-table-col-5 mobile-footer-subtotal-value col-footer-t" style="width:150px;text-align:right;font-weight:bold">{{ beforeTax|number_format }}</div>
+<div class="show-mobile row-break"></div>
+</div>
+<div class="div-table-row subtotal-row no-odd-even-style">
+<div class="div-table-col-5 mobile-footer-subtotal-label col-footer-t" style="text-align:right;font-weight:bold">{{ LANG.PPN|upper }}</div>
+<div class="div-table-col-5 mobile-footer-subtotal-value col-footer-t" style="width:150px;text-align:right;font-weight:bold">{{ taxValue|number_format }}</div>
+<div class="show-mobile row-break"></div>
+</div>
+{% endif %}
+
+{% if etcCost != 0 %}
+<div class="div-table-row subtotal-row no-odd-even-style">
+<div class="div-table-col-5 mobile-footer-subtotal-label col-footer-t" style="text-align:right;font-weight:bold">{{ LANG.etccost|upper }}</div>
+<div class="div-table-col-5 mobile-footer-subtotal-value col-footer-t" style="width:150px;text-align:right;font-weight:bold">{{ etcCost|number_format }}</div>
+<div class="show-mobile row-break"></div>
+</div>
+{% endif %}
+<div class="div-table-row subtotal-row no-odd-even-style">
+<div class="div-table-col-5 mobile-footer-subtotal-label col-footer-t col-footer-b" style="text-align:right;font-weight:bold">{{ LANG.total|upper }}</div>
+<div class="div-table-col-5 mobile-footer-subtotal-value col-footer-t col-footer-b" style="width:150px;text-align:right;font-weight:bold">{{ grandTotal|number_format }}</div>
+<div class="show-mobile row-break"></div>
+</div>
+</div> 
+</div>

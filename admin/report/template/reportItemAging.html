@@ -1,0 +1,45 @@
+{% extends "template.html" %}
+{% block JS %}
+<script type="text/javascript"> 
+	jQuery(document).ready(function(){   
+        //setAutoComplete('filterForm', {objName:'itemName', objValue :'hidItemKey', url : 'ajax-item.php?action=searchData&itemtype=1' });  
+	}); 
+</script>
+{% endblock %}
+{% block filter %}
+ <div> 
+    <div class="form-group">
+        <label class="col-xs-12 control-label" >Kode</label>
+        <div class="col-xs-12"> {{ inputItemCode|raw }}</div>
+    </div>
+     
+    <div class="form-group">
+        <label class="col-xs-12 control-label" >Tanggal</label>
+        {% for dtInput in inputDate %}
+            <div class="col-xs-12"> {{ dtInput|raw }} </div> 
+        {% endfor %}
+    </div> 
+    <div class="form-group">
+        <label class="col-xs-12 control-label" >Gudang</label>
+        <div class="col-xs-12"> {{ inputSelWarehouse|raw }}</div>
+    </div> 
+	<div class="form-group">
+        <label class="col-xs-12 control-label" >Nama</label>
+        <div class="col-xs-12"> {{ inputItemName|raw }} </div>
+    </div>
+    <div class="form-group">
+        <label class="col-xs-12 control-label" >Kategori</label>
+        <div class="col-xs-12"> {{ inputSelCategory|raw }}</div> 
+    </div>
+    <div class="form-group">
+        <label class="col-xs-12 control-label" >Merk</label>
+        <div class="col-xs-12"> {{ inputSelBrand|raw }}</div> 
+    </div> 
+    <div class="form-group">
+        <label class="col-xs-12 control-label" >Status</label>
+        <div class="col-xs-12">{{ inputSelStatus|raw }}</div>
+    </div> 
+ </div>	 
+{% endblock %} 
+
+

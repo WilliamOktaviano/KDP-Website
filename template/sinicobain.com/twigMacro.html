@@ -1,0 +1,372 @@
+{% macro buildProductCategoriesSubmenu(variables) %}
+{% set compiledItemCategory = variables.compiledItemCategory %}   
+  
+<div id="category-menu-bar">     
+        <div class="navbar navbar-default">
+          <div class="navbar-header">
+            <!--<a href="/"><div class="company-logo show-mobile" style="background-image:url('/phpthumb/phpThumb.php?src={{ variables.PHPTHUMB_URL_SRC }}setting/companyLogo/{{ variables.settings.companyLogo }}&hash={{ variables.settings.companyLogoHash }} ')"></div></a>-->
+            <button type="button" data-toggle="collapse" data-target="#navbar-collapse-grid" class="navbar-toggle" style="margin-left:0.3em"><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button>
+            <ul class="menu-icon show-mobile" >
+                <a href="/cart" title="{{ variables.LANG.cart }}"><li><span  class="fa fa-shopping-basket "></span><span class="cart-qty"></span></li></a>
+            </ul> 
+          </div>
+          <div id="navbar-collapse-grid" class="navbar-collapse collapse"> 
+              <ul class="nav navbar-nav">       
+                  
+                {% if variables.loginName is empty %}
+                    <li class="dropdown show-mobile" style="width:50%; float:left;"><a href="/login" title="{{ variables.LANG.login }}" >{{ variables.LANG.login|upper }}</a></li>
+                    <li class="dropdown show-mobile" style="width:50%; float:left;"><a href="/registration" title="{{ variables.LANG.registration }}">{{ variables.LANG.registration|upper }}</a></li>
+                {% else %}  
+                    <li class="dropdown show-mobile" style="width:50%; float:left;"><a href="/profile" title="{{ variables.LANG.profile }}">{{ variables.LANG.profile|upper }}</a></li>
+                    <li class="dropdown show-mobile" style="width:50%; float:left;"><a href="/logout" title="{{ variables.LANG.logout }}">{{ variables.LANG.logout|upper }}</a></li>
+                {% endif %} 
+               
+                <li class="divider" style="clear:both"></li>
+                {% set categoryLevel = compiledItemCategory[0] %}
+                {% for category in categoryLevel.childnode %}
+                  <li class="dropdown"  name="/products.php?{{ category.pkey }}"> 
+                      {% if category.isleaf != 0 %} 
+                            <a href="/products/{{ category.pkey }}/{{ category.name|urlfilter|raw }}" title="{{ category.name|raw }}">{{ category.name|upper|raw }}</a> 
+                      {% else %}
+                           <a href="#" data-toggle="dropdown" class="dropdown-toggle"  title="{{ category.name|raw }}">{{ category.name|upper|raw }}<b class="caret"></b></a> 
+                            <ul class="dropdown-menu single-level">  
+                                {% for subcategory in compiledItemCategory[category.pkey].childnode %}
+                                   <li relkey="{{ subcategory.pkey }}"  name="/products.php?{{ subcategory.pkey }}"> <a href="/products/{{ subcategory.pkey }}/{{ subcategory.name|urlfilter|raw }}"  title="{{ subcategory.name|raw }}">{{ subcategory.name|raw }}</a></li>
+                                {% endfor %}  
+                            </ul>
+                      {% endif %} 
+                  </li>
+                {% endfor %}  
+            </ul> 
+          </div>
+        </div> 
+</div>
+
+{% endmacro %}
+
+{% macro buildServicesSubmenu(variables) %}
+{% set services = variables.services %}   
+  
+<div id="category-menu-bar">    
+    
+        <div class="navbar navbar-default">
+          <div class="navbar-header">
+            <button type="button" data-toggle="collapse" data-target="#navbar-collapse-grid" class="navbar-toggle" style="margin-left:0.3em"><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button>
+          </div>
+          <div id="navbar-collapse-grid" class="navbar-collapse collapse"> 
+              <ul class="nav navbar-nav">       
+                  
+                {% if variables.loginName is empty %}
+                    <li class="dropdown show-mobile" style="width:50%; float:left;"><a href="/login" title="{{ variables.LANG.login }}" >{{ variables.LANG.login|upper }}</a></li>
+                    <li class="dropdown show-mobile" style="width:50%; float:left;"><a href="/registration" title="{{ variables.LANG.registration }}">{{ variables.LANG.registration|upper }}</a></li>
+                {% else %}  
+                    <li class="dropdown show-mobile" style="width:50%; float:left;"><a href="/profile" title="{{ variables.LANG.profile }}">{{ variables.LANG.profile|upper }}</a></li>
+                    <li class="dropdown show-mobile" style="width:50%; float:left;"><a href="/logout" title="{{ variables.LANG.logout }}">{{ variables.LANG.logout|upper }}</a></li>
+                {% endif %} 
+               
+                <li class="divider" style="clear:both"></li> 
+                {% for row in services %}
+                  <li class="dropdown"  name="/services.php?{{ row.pkey }}">  
+                   <a href="/service/{{ row.pkey }}/{{ row.name|urlfilter|raw }}" title="{{ row.name|raw }}">{{ row.name|upper|raw }}</a>  
+                  </li>
+                {% endfor %}  
+            </ul> 
+          </div>
+        </div> 
+</div>
+
+{% endmacro %}
+
+{% macro buildPageList(variables,pagePath) %}    
+    {% set totalPages = variables.totalPages %}  
+    {% set pageIndex = variables.pageIndex %}   
+    {% set pageUrlParam = variables.pageUrlParam %}  
+    {% if totalPages > 0 %}  
+       <div class="page-list-margin"></div> 
+        <ul class="prev-next-page">
+        {% if pageIndex == 0 %}
+        {% set class, url = 'inactive-prev-next-page','replaceurl' %}
+        {% else %}
+        {% set class, url = '', '<a href="/' ~ pagePath ~ '/0" title="' ~ LANG.firstPage ~ '">replaceurl</a>' %}
+        {% endif %}
+        {{ url|replace({'replaceurl':'<li class="' ~ class ~ '">First</li>'})|raw }}
+        {% if pageIndex > 0 %}
+        {% set class, url = '','<a href="/' ~ pagePath ~ '/' ~  (pageIndex-1) ~ '" title="' ~ LANG.previousPage ~ '">replaceurl</a>' %}
+        {% else %}
+        {% set class, url = 'inactive-prev-next-page', 'replaceurl' %}
+        {% endif %}
+        {{ url|replace({'replaceurl':'<li class="' ~ class ~ '">Prev</li>'})|raw }}
+        {% if pageIndex < (totalPages-1) %}
+        {% set class, url = '','<a href="/' ~ pagePath ~ '/' ~  (pageIndex+1) ~ '" title="' ~ LANG.nextPage ~ '">replaceurl</a>' %}
+        {% else %}
+        {% set class, url = 'inactive-prev-next-page', 'replaceurl' %}
+        {% endif %}
+        {{ url|replace({'replaceurl':'<li class="' ~ class ~ '">Next</li>'})|raw }}
+        {% if pageIndex == (totalPages-1) %}
+        {% set class, url = 'inactive-prev-next-page', 'replaceurl' %}
+        {% else %}
+        {% set class, url = '','<a href="/' ~ pagePath ~ '/' ~  (totalPages-1) ~ '" title="' ~ LANG.lastPage ~ '">replaceurl</a>' %}
+        {% endif %}
+        {{ url|replace({'replaceurl':'<li class="' ~ class ~ '">Last</li>'})|raw }}
+        </ul>
+        <ul class="page">
+        {% set visiblePages = 5 %}
+        {% set showOthers = 1 %}
+        {% for i in 0..totalPages-1 %}
+        {% if i == 0 or i == totalPages -1 or (i > pageIndex - visiblePages and i < pageIndex + visiblePages) %}
+        {% set showOthers = 1 %}
+        {% if pageIndex == i %}
+        {% set class, url = 'page-active', 'replaceurl' %}
+        {% else %}
+        {% set class, url = '','<a href="/' ~ pagePath ~ '&page=' ~ i  ~ pageUrlParam ~ '" title="' ~ LANG.page ~ ' ' ~  (i + 1) ~ '">replaceurl</a>' %}
+        {% endif %}
+        {{ url|replace({'replaceurl':'<li class="' ~ class ~ '">' ~ (i+1) ~ '</li>'})|raw }}
+        {% else %}
+        {% if showOthers == 1%}
+        <li class="ellipsis">&middot;&middot;&middot;</li>
+        {% set showOthers = 0 %}
+        {% endif %}
+        {% endif %}
+        {% endfor %}
+        </ul>
+        <div class="page-list-margin"></div> 
+        </div>
+     {% endif %}        
+                   
+{% endmacro %}
+ 
+{% macro buildSearchProductPageList(variables) %}    
+    {% set totalPages = variables.totalPages %}  
+    {% set pageIndex = variables.pageIndex %}   
+    {% set pageUrlParam = variables.pageUrlParam %}  
+     {% if totalPages > 0 %} 
+        <div class="page-list-margin"></div> 
+   	    <ul class="prev-next-page"> 
+            {% if pageIndex == 0 %} 
+                {% set class, url = 'inactive-prev-next-page','replaceurl' %} 
+            {% else %}
+                {% set class, url = '', '<a href="/products-search/page=0' ~ pageUrlParam ~'"  title="' ~ LANG.firstPage ~ '">replaceurl</a>' %} 
+            {% endif %}  
+            {{ url|replace({'replaceurl':'<li class="' ~ class ~ '">First</li>'})|raw }}
+             
+            {% if pageIndex > 0 %} 
+                {% set class, url = '','<a href="/products-search/page=' ~  (pageIndex-1) ~  pageUrlParam ~'"  title="' ~ LANG.previousPage ~ '">replaceurl</a>' %} 
+            {% else %}
+                {% set class, url = 'inactive-prev-next-page', 'replaceurl' %} 
+            {% endif %}  
+            {{ url|replace({'replaceurl':'<li class="' ~ class ~ '">Prev</li>'})|raw }}
+             
+            {% if pageIndex < (totalPages-1) %} 
+                {% set class, url = '','<a href="/products-search/page=' ~  (pageIndex+1) ~  pageUrlParam ~'"  title="' ~ LANG.nextPage ~ '">replaceurl</a>' %} 
+            {% else %}
+                {% set class, url = 'inactive-prev-next-page', 'replaceurl' %} 
+            {% endif %}  
+            {{ url|replace({'replaceurl':'<li class="' ~ class ~ '">Next</li>'})|raw }}
+                                            
+                                            
+            {% if pageIndex  == (totalPages-1) %} 
+                {% set class, url = 'inactive-prev-next-page', 'replaceurl' %} 
+            {% else %}
+                {% set class, url = '','<a href="/products-search/page=' ~  (totalPages-1) ~  pageUrlParam ~'"  title="' ~ LANG.lastPage ~ '">replaceurl</a>' %} 
+            {% endif %}  
+            {{ url|replace({'replaceurl':'<li class="' ~ class ~ '">Last</li>'})|raw }}
+       </ul>   
+        <ul class="page"> 
+             {% set visiblePages = 5 %}
+             {% set showOthers = 1 %}
+             {% for i in 0..totalPages-1 %} 
+             
+             {% if i == 0 or i == totalPages -1 or  (i > pageIndex - visiblePages and i < pageIndex + visiblePages) %}  
+          	     {% set showOthers = 1 %}
+                                                                                                                                                                                           
+                {% if pageIndex == i %} 
+                    {% set class, url = 'page-active', 'replaceurl' %} 
+                {% else %}
+                    {% set class, url = '','<a href="/products-search/page=' ~ i ~  pageUrlParam ~'" title="' ~ LANG.page ~ ' ' ~  (i + 1) ~ '">replaceurl</a>' %} 
+                {% endif %}  
+                {{ url|replace({'replaceurl':'<li class="' ~ class ~ '">' ~ (i+1) ~ '</li>'})|raw }} 
+            {% else %}
+             	{% if showOthers == 1%}
+                 <li class="ellipsis">&middot;&middot;&middot;</li> 
+             	{% set showOthers = 0 %}
+                {% endif %} 
+             {% endif %}
+             
+             {% endfor %}  
+         </ul>  
+        <div class="page-list-margin"></div> 
+     {% endif %}
+{% endmacro %}
+
+{% macro buildItemDataCard(variables) %}   
+ {% set rsItem = variables.rsItem %}
+ <div class="item-data-card"> 
+    <ul >  
+         {% for item in rsItem %} 
+                 <li class="auto-height">
+                      
+                      {% if item.name is empty %}
+                        {% set itemname = item.code  %}
+                        {% set itemnamelink = item.code  %}
+                        {% set hreftitle = item.code  %}
+                      {% else %}
+                        {% set itemname = item.name %}
+                        {% set itemnamelink = item.linkname %}
+                        {% set hreftitle = item.name  %}
+                      {% endif %}
+
+                     
+                      {% set imagesize = "contain" %}
+                      {% if not variables.settings.thumbnailImageSize is empty and variables.settings.thumbnailImageSize == 2 %}
+                        {% set imagesize = "cover" %}
+                      {% endif %}
+                  
+                    <div itemscope itemtype="http://schema.org/offer" class="panel-data" >  
+                        <a href="/products-detail/{{ item.name|urlfilter|raw }}/{{ item.pkey }}" title="{{ item.name|urlfilter|raw }}">
+                        <div class="mobile-image"><img src="/phpthumb/phpThumb.php?src={{ variables.PHPTHUMB_URL_SRC }}item/{{ item.pkey }}/{{ item.mainimage }}&w=500&h=500&hash={{ item.phpThumbHash }}" alt="{{ itemname }}"/></div>
+                        <div class="image"  style="background-size: {{ imagesize }}; background-image:url('/phpthumb/phpThumb.php?src={{ variables.PHPTHUMB_URL_SRC }}item/{{ item.pkey }}/{{ item.mainimage }}&w=500&h=500&hash={{ item.phpThumbHash }}')"></div>
+                       
+                         <div itemprop="price">
+                            {% if item.hasdisc %}<div class="slash-price">Rp. {{ item.originalsellingprice|number_format }}</div>  <div class="tag-disc">{{ item.discpercentage|number_format }} %</div> {% endif %}
+                             <div class="price" style="clear:both">Rp. {{ item.sellingprice|number_format }}</div>
+                         </div>  
+                        
+                        <div itemprop="name" class="name" >{{ itemname|raw }}</div>
+                        <div style="clear:both;"></div>  
+                        
+                         <div itemprop="availability" class="stock unclickable bg-red-cardinal" style=" display:none;">
+                            {% if item.qtyonhand == 0 %}
+                                {{ variables.LANG.outOfStock }}
+                            {% elseif item.qtyonhand <= variables.settings.lowStockThreshold %}
+                                {{ variables.LANG.lowStock }}
+                            {% endif %}
+                         </div>  
+                         <!--<div class="add-to-cart unclickable user-select-none" rel="{{ itemkey }}" style=" background-color:#333; display:none"><i class="fa fa-plus unclickable" aria-hidden="true"></i> {{ variables.LANG.cart }}</div>-->
+                      
+                         <meta itemprop="priceCurrency" content="IDR" />
+                         </a>
+                         <div style="clear:both"></div> 
+                     </div>   
+                </li> 
+         {% endfor %}   
+   		 <div style="clear:both;"></div>
+    </ul>  
+ </div>    
+{% endmacro %}
+
+{% macro itemDataCardJS(variables) %}    
+     
+          $(".form-cart .close").click(function(){
+              $(this).closest("li").find(".form-cart").slideUp();  
+          });  
+
+          $(".add-to-cart").click(function(){
+              $(".form-cart").slideUp();  
+              var obj = $(this).closest("li").find(".form-cart")
+              obj.slideDown();  
+              obj.find("[name='hiditemkey[]']").val($(this).attr("rel"));
+          }); 
+
+
+          var tap = ("ontouchstart" in document.documentElement);
+          if(!tap){  
+             $(".item-data-card ul li .panel-data").mouseenter(function() {  
+                $(this).closest("li").find(".add-to-cart").slideDown();
+              }).mouseleave(function(e) {  
+                $(this).closest("li").find(".add-to-cart").slideUp();
+              });
+           } 
+
+
+          $(".btn-qty-adjust").click(function() {    
+            var qty = parseInt(unformatCurrency($(this).closest(".qty-table").find("[name='orderQty[]']").val()));
+            qty += parseInt($(this).attr("rel"));
+
+            if (qty < 1) qty = 1;
+            $(this).closest(".qty-table").find("[name='orderQty[]']").val(qty).blur(); 
+          }); 
+
+            $(".carousel").carousel({interval: false});
+            $(".carousel").on('slid.bs.carousel', function () {
+               var obj =  $(this).closest(".form-cart");
+               obj.find("[name='hiditemkey[]']").val($(this).find(".active").attr("relpkey"));
+               obj.find(".price > span:first").html($(this).find(".active").attr("relprice")); 
+            });
+
+
+            $(".button-notify").click(function() {   
+                {% if variables.loginName is empty %}	
+                    alert('{{ variables.LANG.loginRequired }}');	
+                {% else %}
+
+                    $.ajax({
+                        type: "POST",
+                        url: "/ajax-emailblast.php",
+                        data: "itemKey=" + $(this).closest("form").find("[name='hiditemkey[]']").val(),
+                        success: function(result){   
+                             alert("{{ variables.LANG.notificationSuccessMessage }}");
+                             $(this).closest(".lower-panel").find(".close").click();
+                        }	
+                    });  
+
+                {% endif %} 
+
+            });  
+
+            $( "[name=order-form]" ).submit(function( event ) { 
+                event.preventDefault();
+                var formObj = $(this);
+                    $.ajax({
+                        type: "POST",
+                        url:  '/ajax-cart.php',
+                        data: $(this).serialize(),
+                        success: function(data){ 
+
+                        } 
+                    }).done(function( data ) {    
+                           formObj.find(".close").click();
+                           updateCartStatus();
+                    });
+
+            }); 
+      
+{% endmacro %} 
+                        
+{% macro buildProductsCategoriesSidemenu(parentkey,compiledItemCategory) %}  
+{% import _self as macro %}
+    <ul>  
+    {% for category in compiledItemCategory[parentkey].childnode %}
+             {% if category.isleaf == 0 %}
+           		 <li class="mm-fullsubopen"  name="/products.php?{{ category.pkey }}">
+                    <span>{{ category.name|raw }}</span>
+                    {{ macro.buildProductsCategoriesSidemenu(category.pkey,compiledItemCategory) }}  
+            	 </li> 
+             {% else %}
+           		  <li  name="/products.php?{{ category.pkey }}"> <a href="/products/{{ category.name|urlfilter|raw }}/cat={{ category.pkey }}" title={{ category.name|raw }}>{{ category.name|raw }}</a></li> 
+             {% endif %}
+    {% endfor %}  
+    </ul>
+{% endmacro %} 
+
+
+{% macro buildProfileSubmenu(variables) %}
+ <ul class="user-select-none">
+	<li name="/profile.php" ><a href="/profile" ><div>{{ variables.LANG.profile }}</div></a></li> 
+	<li name="/transaction-history.php" ><a href="/transaction-history" ><div>{{ variables.LANG.transactionHistory }}</div></a></li>  
+	<li name="/point-history.php" ><a href="/point-history"><div>{{ variables.LANG.point }}</div></a></li>
+	<li name="/voucher.php"><a href="/voucher"><div>{{ variables.LANG.voucher }}</div></a></li>	
+	<!--<li name="/point-cashback.php"><a href="/point-cashback"><div>{{ variables.LANG.cashback }}</div></a></li>-->  
+	 <li name="/simulator-list.php" ><a href="/simulator-list" ><div>{{ variables.LANG.myOffer }}</div></a></li>   
+</ul>
+{% endmacro %}
+
+{% macro pointBar(variables) %}
+	{% set width = variables.eligiblePoint / variables.minimumPoint * 100 %}
+	{% if width > 100 %} {% set width = 100 %} {% endif %}
+	<div class="achievement-bar">
+		<div class="full-bar"></div> 
+		<div class="point-accumulated" style="width:{{ width }}%"></div>
+		<div class="start-point" style="position: absolute; left: 0">0</div>
+		<div class="goal-point">{{ variables.minimumPoint }}</div>
+	</div>	
+{% endmacro %}

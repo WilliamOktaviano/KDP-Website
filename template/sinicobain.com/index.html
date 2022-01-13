@@ -1,0 +1,281 @@
+{% extends "template.html" %}
+{% block pagetitle %}{{ settings.companyName }} | {{ parent() }}{% endblock %}
+
+{% block CSS %}
+<link rel="stylesheet" type="text/css" href="{{ TEMPLATE_CSS_PATH }}slick.css">
+<link rel="stylesheet" type="text/css" href="{{ TEMPLATE_CSS_PATH }}slick-theme.css">
+{% endblock %}
+
+{% block JS %}
+<script type="text/javascript" src="{{ TEMPLATE_JS_PAGE_PATH }}index.min.js"></script>
+<script type="text/javascript" src="{{ TEMPLATE_JS_PATH }}slick.min.js"></script>
+<script type="text/javascript" src="{{ TEMPLATE_JS_PATH }}galleria-1.6.1.min.js"></script> 
+
+<script type="text/javascript">
+jQuery(document).ready(function(){   
+ var opt = new Array();
+ var banner = new Array();
+banner['slideShow'] = [
+                                        {% for banner in banner['slide show'] %}  
+                                                {    	image: '/phpthumb/phpThumb.php?src={{ PHPTHUMB_URL_SRC }}banner/{{ banner.pkey }}/{{  banner.file }}&hash={{  banner.phpThumbHash }}',
+                                                        title: '{{ banner.name }}', 
+                                                        link: '{{ banner.url }}'  ,
+                                                        html: '{{ banner.name }}' 
+                                                    },   
+                                        {% endfor %} 
+                                 ];
+ banner['mobileSlideShow'] = [
+                                       {% for banner in banner['mobile main banner'] %}  
+                                                {    	image: '/phpthumb/phpThumb.php?src={{ PHPTHUMB_URL_SRC }}banner/{{ banner.pkey }}/{{  banner.file }}&hash={{  banner.phpThumbHash }}',
+                                                        title: '{{ banner.name }}', 
+                                                        link: '{{ banner.url }}',
+                                                        html: '{{ banner.name }}'
+                                                    },   
+                                        {% endfor %} 
+                                 ];
+opt['banner'] = banner;
+opt['templateJSPath'] = '{{ TEMPLATE_JS_PATH }}';
+  
+    
+var errMsg = new Array();     
+errMsg['email'] = {{ ERRORMSG.email|json_encode()|raw }};
+opt['errMsg'] = errMsg;
+                       
+ var lang = new Array();   
+ lang['newsletterSubscribeSuccess'] = '{{ LANG.newsletterSubscribeSuccess }}';
+ opt['lang'] = lang;
+    
+ var index = new Index(opt);
+ index.loadOnReady();   
+});
+    
+</script>
+<script  type="text/javascript"  src='https://www.google.com/recaptcha/api.js'></script>  
+{% endblock %}
+
+{% block content %}    
+<div class="content-wrapper">
+<div style="clear: both; height: 1em"></div>
+<div id="banner-galleria" ></div>   
+{% if not rsDiscountedItem is empty %}
+    <div class="products" style="padding-top: 4em"> 
+        <div class="promotion"> 
+                  <div class="title"><span class="title-promo">SPECIAL PROMOTION</span> <a href="/products" class="see-all">See All</a></div>
+                 <!-- <div class="loading"><i class="fas fa-spinner fa-spin"></i></div>-->
+                  <ul class="item-list">  
+                    {% for data in rsDiscountedItem %}
+                    <li class="slick-slide">
+                        <div class="content-panel"> 
+                            <a href="products-detail/{{ data.name|urlfilter }}/{{ data.itemkey }}"> 
+                                <div class="image" style="background-image:url('/phpthumb/phpThumb.php?src={{ PHPTHUMB_URL_SRC }}item/{{ data.itemkey }}/{{ data.mainimage }}&f=png&hash={{ data.phpThumbHash }}')"></div> 
+                                <div class="item-name auto-height">{{ data.name|raw }}</div>
+                                <div class="tag-disc">{{ data.discpercentage|number_format }} %</div>
+                                <div class="item-price"> 
+                                    <div class="slash-price">Rp {{ data.sellingprice|number_format }}</div>
+                                    <div>Rp. {{data.discountedprice|number_format}}</div>
+                                </div> 
+                            </a>
+                        </div>
+                    </li> 
+                    {% endfor %} 
+                </ul> 
+        </div>  
+    </div>
+{% endif %}    
+    
+    <div style="clear: both; height: 6em"></div>
+    <div class="category"> 
+        <div class="subtitle">Shop by Category</div>
+        <ul class="category-list"> 
+              <li>
+                <a href="/product-categories"> 
+                <div class="content-panel">
+                    <div class="image" style="background-image:url('{{ TEMPLATE_IMG_PATH }}all.png')"></div>
+                    <div class="auto-height category-name">{{ LANG.allCategories }}</div> 
+                </div>       
+                </a>
+            </li>
+            {% for data in itemCategory %} 
+            <li>
+                <a href="products/{{ data.name|urlfilter }}/cat={{ data.pkey }}"> 
+                <div class="content-panel">
+                    <div class="image" style="background-image:url('/phpthumb/phpThumb.php?src={{ PHPTHUMB_URL_SRC }}item-category/{{ data.pkey }}/{{ data.file }}&f=png&hash={{ data.phpThumbHash }}')"></div>
+                    <div class="auto-height category-name">{{ data.name }}</div> 
+                </div>       
+                </a>
+            </li>
+            {% endfor %}  
+        </ul> 
+    </div>    
+    <div style="clear: both; height: 4em"></div> 
+    <div class="content-showroom">
+        <div class="flex">
+            <div class="consume"><h1>VIRTUAL SHOWROOM <span>TOUR</span></h1></div>
+            <div class="btn-dflt"><a href="/showroom.html">Start here <i class="fa fa-arrow-right"></i></a></div>
+        </div>
+    </div>  
+    
+    <div style="clear: both; height: 4em"></div> 
+    <div class="why-choose">
+                    <div class="subtitle">
+                        <h2>Why Choose Kenari Djaja</h2>
+                        <div class="subtitle"> Segera Bergabung dan Dapatkan Manfaat Sebagai Member</div>
+                    </div>
+                    <div style="clear: both; height: 2em"></div> 
+                    <ul class="choose-list">
+                        <li>
+                            <div class="div-table content-panel">
+                                <div class="div-table-row" >
+                                    <div class="div-table-col icon-col">
+                                        <div class="icon icon-01"></div>
+                                    </div>
+                                        <div class="div-table-col desc" >
+                                            <h2>Ironmongery Service</h2>
+                                            <p>Detail of the product provides customers with function and needs.</p> 
+                                        </div>
+                                    <div class="div-table-col line"></div>
+                                </div>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="div-table content-panel">
+                                 <div class="div-table-row">
+                                    <div class="div-table-col icon-col">
+                                        <div class="icon icon-02"></div>
+                                    </div>
+                                    <div class="div-table-col desc" >
+                                        <h2>24/7 Emergency</h2>
+                                        <p>We are available and ready to assist you 24/7</p>
+                                    </div>
+                                    <div class="div-table-col line"></div>
+                                </div>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="div-table content-panel">
+                                <div class="div-table-row">
+                                    <div class="div-table-col icon-col">
+                                        <div class="icon icon-03"></div>
+                                    </div>
+                                    <div class="div-table-col desc">
+                                        <h2>Warranty</h2>
+                                        <p>We proudly supply our customers with high quality product and guarantee</p>
+                                    </div>
+                                    <div class="div-table-col line"></div>
+                                </div>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="div-table content-panel">
+                                <div class="div-table-row">
+                                    <div class="div-table-col icon-col">
+                                        <div class="icon icon-04"></div>
+                                    </div>
+                                    <div class="div-table-col desc">
+                                        <h2>Master Key</h2>
+                                        <p>MA master key system is a key plan whereby selected keys can open a number of predefined doors.</p>
+                                    </div>
+                                    <div class="div-table-col line"></div>
+                                </div>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="div-table content-panel" >
+                                <div class="div-table-row" >
+                                    <div class="div-table-col icon-col">
+                                        <div class="icon icon-05"></div>
+                                    </div>
+                                    <div class="div-table-col desc">
+                                        <h2>Customer Service</h2>
+                                        <p>Drop us a line and we will answer your questions shortly.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="div-table content-panel" >
+                                <div class="div-table-row" >
+                                    <div class="div-table-col icon-col">
+                                        <div class="icon icon-06"></div>
+                                    </div>
+                                    <div class="div-table-col desc">
+                                        <h2>Free Survey Service</h2>
+                                        <p>Survey team will come to measure quality of the products for FREE.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+    </div>  
+    
+    <div style="clear: both; height: 4em"></div> 
+    
+    <div class="subtitle">Product Highlight</div>
+    <div class="banner-highlight grid-wrapper">
+         {% for banner in banner['highlight'] %}  
+         {% set class = (loop.index == 1)  ? 'big':'wide'  %}
+            <div class="{{ class }}">
+                <img src="{{ HTTP_HOST }}phpthumb/phpThumb.php?src={{ PHPTHUMB_URL_SRC }}banner/{{ banner.pkey }}/{{  banner.file }}&hash={{  banner.phpThumbHash }}" />
+            </div>
+        {% endfor %}  
+    </div> 
+
+    <div style="clear: both; height: 6em"></div> 
+    
+    <div class="portfolio" > 
+         <div class="subtitle"> Our Clients </div>
+         <!--<a href="/gallery" class="see-all">See All</a>-->
+         <ul class="portfolio-list">
+            {% for row in rsGallery %}                   
+                {% if loop.index0 == 0 %}<li>{% endif %}  
+                {% if loop.index0 > 0 and loop.index0 % 3 == 0 %}</li><li>{% endif %}   
+                  <div class="content-panel" style="background-image:url('/phpthumb/phpThumb.php?src={{ PHPTHUMB_URL_SRC }}gallery/{{ row.pkey }}/{{ row.mainimage }}&hash={{ row.phpThumbHash }}')"></div> 
+            {% endfor %}  
+             </li>
+         </ul> 
+    </div>  
+    <!--<div style="clear: both; height: 4em"></div> 
+    <div class="client" >  
+        <div class="subtitle">Our Brands</div>
+            <ul class="client-list">
+            {% for row in rsBrand %}
+                <li><a href="#"><div class="content-panel" style="background-image:url('/phpthumb/phpThumb.php?src={{ PHPTHUMB_URL_SRC }}brand/{{ row.pkey }}/{{ row.file }}&f=png&hash={{ row.phpThumbHash }}')"></div></a></li> 
+             {% endfor %}   
+            </ul> 
+    </div>
+    -->
+    <div style="clear: both; height: 4em"></div> 
+    
+    <div class="article" > 
+        <div class="subtitle">Inspiration</div> 
+        <a href="/articles" class="see-all">See All</a>
+        <div style="clear: both;"></div> 
+        <div class="grid-wrapper">
+        {% for data in rsLatestFeaturedArticles %}   
+            {% set class = (loop.index is divisible by(2)) ? 'wide':''  %}
+            <div class="content-panel {{ class }}" style="background-image:url('/phpthumb/phpThumb.php?src={{ PHPTHUMB_URL_SRC }}article/{{ data.pkey }}/{{ data.file }}&f=png&hash={{ data.phpThumbHash }}')">
+               <div class="title"><a href="/inspirasi/{{ data.categoryname|urlfilter }}/{{ data.title|urlfilter }}/{{ data.pkey }}">{{ data.title }}</a></div>
+            </div>
+         {% endfor %}  
+        </div>   
+    </div>
+    
+    <div style="clear: both; height: 6em"></div> 
+    
+</div>     
+    
+  
+<div class="subscribe" style="padding: 2em">
+    <div class="content-wrapper">
+            <div class="flex">
+                   <h1 class="subtitle">Sign Up Now and Join Our News Letter</h1>
+                   <div class="consume input-newsletter">{{ inputSubscribeNewsletter|raw }}</div>
+                   <div class="subscribe-button">{{ btnSubmitSubscribeNewsletter|raw }}</div>
+            </div>
+    </div> 
+</div>  
+{% endblock %}
+ 
+{% block contactusfooter %}    
+{{ parent() }}  
+{% endblock %}

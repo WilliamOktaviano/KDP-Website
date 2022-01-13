@@ -1,0 +1,99 @@
+<div style="font-family: Arial; width: 800px; margin: auto; border:1px solid #dedede; padding: 2em">
+<table style="width:100%">
+    <tr>
+        <td><img src="{{ HTTP_HOST }}download/{{ companyLogoDocPath }}"></td>
+        <td>
+        {% if statuskey == 1 %}
+            <a style="color: #fff; text-decoration: none" href="{{ HTTP_HOST }}payment-process/sales-order/{{ pkey }}" target="_blank"><div style="float: right;  text-decoration: none; background-color: #418aca; display: inline; padding: 1em">{{ LANG.continueToPayment }}</div></a>
+            <div style="clear:both; height: 3em"></div>     
+        {% endif %}
+        </td>
+    </tr>
+</table>
+
+<h2>
+<div style="text-align: center;">{{ LANG.salesInvoice|upper }}</div>
+<div style="text-align: center;">{{ code|upper }}</div>
+</h2>    
+<div style="clear:both; height: 3em"></div>     
+<table style="width: 100%;">
+<tr>
+    <td>
+        <table style="width: 100%;">
+        <tr>
+        <td style="width:8em;font-weight:bold; vertical-align: top;">{{ LANG.name }}</td>
+        <td>{{ recipientName|raw }}</td>
+        </tr>
+        <tr>
+        <td style="width:8em;font-weight:bold; vertical-align: top;">{{ LANG.phone }}</td>
+        <td>{{ recipientPhone|raw }}</td>
+        </tr>
+        <tr>
+        <td style="width:8em;font-weight:bold; vertical-align: top;">{{ LANG.email }}</td>
+        <td>{{ recipientEmail|raw }}</td>
+        </tr>
+        <tr>
+        <td style="width:8em;font-weight:bold; vertical-align: top;">{{ LANG.address }}</td>
+        <td>{{ recipientAddress|raw }}</td>
+        </tr> 
+        </table>  
+    </td>
+    <td style="vertical-align: top">
+         <table  style="width:100%">
+            <tr>
+            <td style="width:8em;font-weight:bold; vertical-align: top;">{{ LANG.invoiceDate }}</td>
+            <td>{{ trdate|date("d M Y") }}</td>
+            </tr>
+            <tr>
+            <td style="width:8em;font-weight:bold; vertical-align: top;">{{ LANG.status }}</td>
+            <td>{{ statusname }}</td>
+            </tr> 
+        </table>    
+    </td>
+</tr>      
+</table>
+    
+<table style="width:100%" cellpadding="5" cellspacing="0">
+    <tr style="font-weight: bold; background-color: #dedede">
+    <td style="text-align:right;width:10px; border-radius: 0.3em 0 0 0.3em">#</td>
+    <td style="text-align:left">{{ LANG.itemName }}</td>
+    <td style="text-align:right;width:60px">{{ LANG.qty }}</td> 
+    <td style="text-align:right;width:120px">{{ LANG.price }}</td> 
+    <td style="text-align:right;width:150px; border-radius: 0 0.3em 0.3em 0">{{ LANG.subtotal }}</td>
+    </tr> 
+
+    {% for item in rsDetail %}
+    <tr>
+    <td style="text-align:right;vertical-align:top">{{ loop.index }}.</td>
+    <td style="vertical-align:top;text-align:left"><a href="{{ HTTP_HOST }}products-detail/{{ not item.itemaliasname ?  item.itemname|urlfilter|raw : item.itemaliasname|urlfilter|raw }}/{{ item.itemkey }}" target="_blank">{{ not item.itemaliasname ?  item.itemname|raw : item.itemaliasname|raw }}</a></td>
+    <td style="text-align:right;vertical-align:top" >{{ item.qty|number_format }}</td>  
+    <td style="text-align:right;vertical-align:top">{{ item.priceinunit|number_format }}</td> 
+    <td style="text-align:right;vertical-align:top">{{ item.total|number_format }}</td>
+    </tr>    
+    {% endfor %}
+     
+    <tr>
+    <td colspan="4"  style="border-top:1px solid #666; text-align:right;font-weight:bold">{{ LANG.subtotal|upper }}</td>
+    <td style="border-top:1px solid #666;  width:150px;text-align:right;font-weight:bold">{{ subtotal|number_format }}</td>
+    </tr> 
+    
+    {% if shipmentFee != 0 %} 
+    <tr>
+    <td colspan="4" style="text-align:right;font-weight:bold">{{ LANG.shippingCost|upper }}</td>
+    <td style="width:150px;text-align:right;font-weight:bold">{{ shipmentFee|number_format }}</td> 
+    </tr> 
+    {% endif %}
+     
+    {% if etcCost != 0 %} 
+    <tr>
+    <td colspan="4" style="text-align:right;font-weight:bold">{{ LANG.etccost|upper }}</td>
+    <td style="width:150px;text-align:right;font-weight:bold">{{ etcCost|number_format }}</td> 
+    </tr> 
+    {% endif %} 
+    
+    <tr>
+    <td colspan="4" style="text-align:right;font-weight:bold">{{ LANG.total|upper }}</td>
+    <td style="width:150px;text-align:right;font-weight:bold">{{ grandTotal|number_format }}</td>  
+    </tr>  
+</table>
+</div>

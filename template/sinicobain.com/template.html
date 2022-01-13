@@ -1,0 +1,418 @@
+<!doctype html>
+{% set TEMPLATE_JS_PAGE_PATH = TEMPLATE_JS_PAGE_PATH ~ 'formJS-1.5/' %}
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head> 
+<meta name="google-site-verification" content="KlPoDGH1a5s2mAnngeHAdUe-TOYlPnAIOzUDLQtIVuM" />
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+{% block meta %}
+<meta name="title" content="{{ META_TITLE }}">
+<meta name="description"  content="{{ META_DESCRIPTION }}">
+<meta name="keywords" content="{{ META_KEYWORDS }}">
+<meta name="author" content="{{ settings.companyName }}"> 
+<meta property=og:url content="{{ CANONICAL }}" />
+<meta property=og:site_name content="{{ settings.companyName }}" />
+<meta property="og:url" content="{{ META_URL }}" />
+<meta property="og:type" content="{{ META_TYPE }}" />
+<meta property="og:title" content="{{ META_TITLE }}" />
+<meta property="og:description" content="{{ META_DESCRIPTION }}" /> 
+<meta property="og:image" content="{{ META_IMAGE }}" /> 
+<meta property="fb:app_id" content="{{ settings.FBAppID }}" /> 
+{% endblock %} 
+    
+<link rel=apple-touch-icon sizes=180x180 href="{{ TEMPLATE_IMG_PATH }}favicon/apple-touch-icon.png">
+<link rel=icon type=image/png sizes=32x32 href="{{ TEMPLATE_IMG_PATH }}favicon/favicon-32x32.png">
+<link rel=icon type=image/png sizes=16x16 href="{{ TEMPLATE_IMG_PATH }}favicon/favicon-16x16.png">
+    
+<link rel="canonical" href="{{ CANONICAL }}" />  
+<link rel="stylesheet" type="text/css" href="{{ TEMPLATE_CSS_PATH }}bootstrap.min.css"> 
+<link rel="stylesheet" type="text/css" href="{{ TEMPLATE_CSS_PATH }}jquery.mmenu.all.css">
+{% block CSS %}{% endblock %}   <!-- harus sebelum webstyle agar bisa dioverwrite -->
+<link rel="stylesheet" type="text/css" href="{{ TEMPLATE_CSS_PATH }}webStyle.1.20.min.css">
+{% block CSSInline %}{% endblock %}    
+    
+<script type="text/javascript" src="https://platform-api.sharethis.com/js/sharethis.js#property=61495d45370144001a899416&product=sticky-share-buttons" async="async"></script>
+<script type="text/javascript" src="{{ TEMPLATE_JS_PATH }}jquery-3.3.1.min.js"></script>  
+<script type="text/javascript" src="{{ TEMPLATE_JS_PATH }}jquery-ui.min.js"></script>   
+<script type="text/javascript" src="{{ TEMPLATE_JS_PATH }}bootstrap.min.js"></script>   
+<script type="text/javascript">
+// onload CSS
+function loadCSS(a,d,f,g){var b=window.document.createElement("link");var c=d||window.document.getElementsByTagName("script")[0];var e=window.document.styleSheets;b.rel="stylesheet";b.href=a;b.media="only x";if(g){b.onload=g}c.parentNode.insertBefore(b,c);b.onloadcssdefined=function(h){var k;for(var j=0;j<e.length;j++){if(e[j].href&&e[j].href===b.href){k=true}}if(k){h()}else{setTimeout(function(){b.onloadcssdefined(h)})}};b.onloadcssdefined(function(){b.media=f||"all"});return b};
+
+loadCSS( "{{ TEMPLATE_CSS_PATH }}jquery-font-awesome.min.css" );   
+</script> 
+     
+{% set categoryKey = 0 %} 
+{% if not categoryPath is empty %}
+    {% set categoryName = categoryPath[0].name %}
+    {% set categoryKey = categoryPath[0].pkey %}
+{% endif %} 
+ 
+{% block structureData %}{{ STRUCTURE_DATA|raw }}{% endblock %}
+{% if not settings.FBPluginScript is empty %} 
+     {{ settings.FBPluginScript|replace({'{{ FB_APP_ID }}': settings.FBAppID })|raw }}
+{% endif %}     
+
+{% import "twigMacro.html" as macro %}  
+    
+{{ settings.googleSiteVerification|raw }}
+<title>{% block pagetitle %} {{ HTTP_HOST|trim('/') }} {% endblock %}</title>  
+<div class="sharethis-sticky-share-buttons"></div>
+</head>
+
+<body>  
+<div id="popup-panel"></div>
+<form name="parameter-form" class="prevent-form-submit" method="post">
+{{ hidLayout|raw }} 
+{{ hidTotalItemPerPage|raw }}
+</form>
+<div class="floating-wa-panel">
+<a href="https://api.whatsapp.com/send?phone={{ whatsapp[0].value|wafilter }}" target="_blank"><div class="floating-wa-button"><i class="fab fa-whatsapp"></i></div></a>
+</div>
+
+<nav id="side-menu">  
+<div class="mm-menu mm-offcanvas">  
+{% for langRow in rslang %} 
+ <!--<div class="side-menu-lang flag" relkey="{{ langRow.code }}" style="background-image:url('/phpthumb/phpThumb.php?src={{ PHPTHUMB_URL_SRC }}lang/{{ langRow.pkey }}/{{ langRow.file }}&hash={{ langRow.phpThumbHash }}')"></div>  -->
+{% endfor %}
+<div style="clear: both; height: 1em"></div> 
+<div class="side-menu-logo" style="background-image:url('/phpthumb/phpThumb.php?src={{ PHPTHUMB_URL_SRC }}setting/companyLogo/{{ settings.companyLogo }}&f=png&hash={{ settings.companyLogoHash }}')"></div>
+     
+<ul class="side-menu">      
+     <li name="/index.php"><a href="/" title="{{ LANG.home }}">Home</a></li> 
+    <li name="/simulator.php"><a href="/simulator" title="{{ LANG.offerSimulator }}">{{ LANG.offerSimulator }}</a></li> 
+     <li name="/download-list.php"><a  href="/katalog" title="{{ LANG.catalogs }}">{{ LANG.catalogs }}</a></li>
+     <li name="/products.php" class="mm-fullsubopen">
+             <span>{{ LANG.products }}</span> 
+             {{ macro.buildProductsCategoriesSidemenu(0,compiledItemCategory) }}  
+    </li>  
+     <li name="showroom"><a  href="/showroom.html" title="{{ LANG.virtualShowroom }}">{{ LANG.virtualShowroom }}</a></li>
+     <li name="/articles.php"><a  href="/articles" title="{{ LANG.inspiration }}">{{ LANG.inspiration }}</a></li>
+     <li name="/gallery.php"><a  href="/our-clients" title="{{ LANG.portfolio }}">{{ LANG.portfolio }}</a></li>
+     <!--<li name="/warranty.html"><a  href="/cart" title="{{ LANG.warranty }}">{{ LANG.warranty }}</a></li>-->
+     <li name="/about-company.php" class="mm-fullsubopen">
+             <span>{{ LANG.aboutus }}</span> 
+            <ul>
+                <li name="about-us"><a href="/about-us.html" title="About Kenari Djaja">About Kenari Djaja</a></li> 
+                <li name="core-value"><a href="/core-value.html" title="Core Value">Core Value</a></li> 
+                <li name="showroom"><a href="/showroom.html" title="{{ LANG.virtualShowroom }}">{{ LANG.virtualShowroom }}</a></li> 
+                <li name="/job-opportunities.php"><a href="/careers" title="{{ LANG.careers }}">{{ LANG.careers }}</a></li> 
+                <li name="/contact-us.php"><a href="/contact" title="{{ LANG.contact }}">{{ LANG.contact }}</a></li>  
+             </ul>  
+     </li>
+     
+     <li name="/download-app.php"><a  href="/download-app" title="{{ LANG.downloadApp }}">{{ LANG.downloadApp }}</a></li>
+    
+     <li name="/cart.php" style="margin-top: 1em">
+         <a href="/cart" title="{{ LANG.cart }}" ><div style="float:left">{{ LANG.cart }}</div> <div class="mnv-cart-qty"  style="float:left"></div>  </a></li>
+    {% if loginName is empty %}
+        <li name="/login.php" ><a href="/login" title="{{ LANG.login }}">{{ LANG.login }}</a></li> 
+        <li name="/registration.php"><a href="/registration" title="{{ LANG.registration }}">{{ LANG.registration }}</a></li>  
+    {% else %}
+        <li name="/profile.php" >
+			<span>{{ LANG.profile }}</span>
+			<ul>   
+				 <li class="mm-fullsubopen"  name="/profile.php"><a href="/profile" >{{ LANG.profile }}</a></li>  
+				 <li class="mm-fullsubopen"  name="/transaction-history.php"><a href="/transaction-history" >{{ LANG.transactionHistory }}</a></li>  
+				 <li class="mm-fullsubopen"  name="/point-history.php"><a href="/point-history" >{{ LANG.point }}</a></li>  
+				 <li class="mm-fullsubopen"  name="/voucher.php"><a href="/voucher" >{{ LANG.voucher }}</a></li>     
+				 <li class="mm-fullsubopen"  name="/simulator-list.php"><a href="/simulator-list" >{{ LANG.myOffer }}</a></li>  
+			</ul>
+		</li>  
+        <li name="/logout.php"><a href="/logout" title="{{ LANG.logout }}">{{ LANG.logout }}</a></li>   
+	
+    {% endif %}  
+</ul> 
+</div>  
+</nav>
+<!--<div class="header-menu">  -->
+   <div class="btn-side"><a href="#side-menu" id="btn-side-menu"><i class="fas fa-bars"></i></a> </div>
+   <div class="top-header  hide-mobile"></div>
+   <div class="sticky-box hide-mobile">
+    <div class="top-box">
+        <div class="content-wrapper">
+            <div class="flex">
+                <div ><a href="/" title="{{ LANG.home }}"><div class="company-logo" style="background-image:url('/phpthumb/phpThumb.php?src={{ PHPTHUMB_URL_SRC }}setting/companyLogo/{{ settings.companyLogo }}&hash={{ settings.companyLogoHash }}')"> </div></a></div>
+                <div class="consume">
+                    <div class="search-box label-style">
+                       <form>
+                            <div class="category-search user-select-none">
+                                {{ selCategoryQuickSearch|raw }}
+                                <i class="fas fa-sort-down"></i>
+                            </div>
+                            <div class="search-product">
+                                <i class="fa fa-search"></i>
+                                {{ inputQuickSearch|raw }} 
+                            </div>
+
+                        </form>
+                    </div>
+                </div> 
+                <ul class="login-panel">  
+                 <li class="shopping-cart" name="/cart.php">
+                     <a href="/cart" title="{{ LANG.cart }}">
+                     <i class="fa fa-shopping-cart" style="float:left" ></i>
+                     <div class="mnv-cart-qty" style="float:left" ></div>
+                     </a></li>
+                    {% if loginName is empty %}
+                      <li class="btn-dflt" name="/login.php"><a href="/login" title="{{ LANG.login }}">{{ LANG.login }}</a></li>
+                      <li class="btn-dflt btn-sign-up"name="/registration.php"><a href="/registration" title="{{ LANG.signup }}">{{ LANG.signup }}</a></li>
+                    {% else %}  
+                     <li class="subsec-profile">
+                        <i class="fas fa-user-circle" style="float: left; margin-top: 0.1em"></i> 
+                        <div class="profile-sub-menu">
+                            <div class="content-panel">
+                            <ul>
+                                <li><a href="/profile"><div class="item">{{ LANG.profile }}</div></a></li> 
+                                <li><a href="/transaction-history"><div class="item">{{ LANG.transactionHistory }}</div></a></li> 
+                                <li><a href="/point-history"><div class="item">{{ LANG.point }} &amp; {{ LANG.voucher }}</div></a></li> 
+                                <li><a href="/simulator-list"><div class="item">{{ LANG.myOffer }}</div></a></li> 
+                                <li><a href="/logout"><div class="item">{{ LANG.logout }}</div></a></li>
+                            </ul>        
+                            </div>
+                        </div>
+                    </li>     
+                    {% endif %}
+                </ul> 
+            </div> 
+        </div>
+    <div style="clear: both" ></div>
+    </div>
+   <div style="height:0.3em;background-color:#f00"></div>
+        <div class="content-wrapper">
+            <div class="bottom-menu">
+                <div class="main-menu-flex" style="width:100%">
+                    <span class="menu-item" name="/simulator.php"><a href="/simulator" title="{{ LANG.offerSimulator }}">{{ LANG.offerSimulator|upper }}</a></span>
+                    <span class="menu-item" name="/download-list.php"><a href="/katalog" title="{{ LANG.catalogs }}">{{ LANG.catalogs|upper }}</a></span>
+                    <span class="menu-item" name="showroom"><a href="/showroom.html" title="{{ LANG.virtualShowroom }}">{{ LANG.virtualShowroom|upper }}</a></span>
+                    <span class="menu-item" name="/articles.php"><a href="/articles" title="{{ LANG.inspiration }}">{{ LANG.inspiration|upper }}</a></span>
+                    <span class="menu-item" name="/gallery.php"><a href="/our-clients" title="{{ LANG.portfolio }}">{{ LANG.portfolio|upper }}</a></span>
+                    <span class="menu-item dropdown" name="/about-company.php">{{ LANG.aboutus|upper }}
+                        <div>
+                            <ul>
+                                <li><a href="/about-us.html">Profil Kenari Djaja</a></li>
+                                <li><a href="/core-value.html">Core Value</a></li>
+                                <li name="/job-opportunities.php"><a href="/careers">Careers</a></li>
+                                <li name="/contact-us.php"><a href="/contact-us">Hubungi Kami</a></li>
+                            </ul>
+                        </div> 
+                    </span>
+                    <!--<span class="menu-item" name="/warranty.html"><a href="/warranty.html" title="{{ LANG.warranty }}">{{ LANG.warranty|upper }}</a></span>-->
+                    <span class="menu-item" name="/download-app.php"><a href="/download-app" title="{{ LANG.downloadApp }}">{{ LANG.downloadApp|upper }}</a></span>
+                </div>
+                <!--<ul class="main-menu">
+                    <li name="/simulator.php"><a  href="/simulator" title="{{ LANG.offerSimulator }}">{{ LANG.offerSimulator|upper }}</a></li>
+                    <li name="/products.php"><a  href="#" title="{{ LANG.catalogs }}">{{ LANG.catalogs|upper }}</a></li>
+                    <li name="/showroom.php"><a  href="/showroom" title="{{ LANG.virtualShowroom }}">{{ LANG.virtualShowroom|upper }}</a></li>
+                    <li name="/articles.php"><a  href="/articles" title="{{ LANG.inspiration }}">{{ LANG.inspiration|upper }}</a></li>
+                    <li name="/gallery.php"><a  href="/gallery" title="{{ LANG.portfolio }}">{{ LANG.portfolio|upper }}</a></li>
+                    <li name="/warranty.php"><a  href="/cawarrantyrt" title="{{ LANG.warranty }}">{{ LANG.warranty|upper }}</a></li>
+                    <li name="/download-app.php"><a  href="/download-app" title="{{ LANG.downloadApp }}">{{ LANG.downloadApp|upper }}</a></li>
+                </ul> -->
+            </div>
+        </div>
+    </div>
+    <div class="dummy-header"></div>    
+    <div style="clear:both"></div>    
+<!--</div>-->
+<div id="{{ PAGE_ID }}"> 
+<div class="min-page-height">{% block content %}{% endblock %}</div>
+</div>  
+<div class="footer"> 
+<div class="content-wrapper">
+<div class="div-table div-table-footer" style="width:100%">
+    <div class="div-table-row">
+    <div class="div-table-col footer-logo-col"> 
+        <div class="footer-logo-panel">
+            <div class="banner-logo"> 
+                <div class="logo-footer"><img src="{{ TEMPLATE_IMG_PATH }}img-02.png"></div> 
+                <div class="banner-link">
+                    <a href="">{{ LANG.learnMore }}</a>
+                    <a href="">{{ LANG.joinNow }}</a>
+                </div> 
+            </div>
+            <div class="medsos-panel">
+                 {% if not settings.companyMedsos is empty %} {% endif %}
+                <ul>   
+                 {% for item in settings.companyMedsos %} 
+                    {% if item.label|lower == "fb" or item.label|lower == "facebook" %}  
+                        {% set FA_ICON = "fab fa-facebook-square" %}
+                    {% elseif item.label|lower == "instagram" %}  
+                        {% set FA_ICON = "fab fa-instagram" %}
+                    {% elseif item.label|lower == "twitter" %}  
+                        {% set FA_ICON = "fab fa-twitter" %}
+                    {% elseif item.label|lower == "youtube" %}  
+                        {% set FA_ICON = "fab fa-youtube" %}
+                    {% endif %}  
+                    <li><a href="{{ item.value }}" title="{{ LANG.linkto }} {{ item.label }}" target="_blank"><i class="{{ FA_ICON }}"></i></a></li>
+                  {% endfor %}  
+                </ul>   
+            </div>
+            <ul class="contact-channel" >
+             {% for item in settings.companyPhone %}   
+                <li> <a href="https://api.whatsapp.com/send?phone={{ item.value|wafilter }}" target="_blank"><i class="fab fa-whatsapp"></i><span class="label">{{ item.value }}</span></a></li>
+              {% endfor %} 
+            </ul> 
+        </div>
+    </div>
+    <div class="div-table-col menu-col">
+        <div class="footer-col-menu"> 
+        <div class="footer-col">
+            <div class="title">{{ LANG.aboutus }}</div>
+            <ul>
+                <li><a href="/about-us.html" title="About Kenari Djaja">About Kenari Djaja</a></li> 
+                <li><a href="/core-value.html" title="Core Value">Core Value</a></li> 
+                <li><a href="/showroom.html" title="{{ LANG.virtualShowroom }}">{{ LANG.virtualShowroom }}</a></li> 
+                <li><a href="/careers" title="{{ LANG.careers }}">{{ LANG.careers }}</a></li> 
+                <li><a href="/our-clients" title="{{ LANG.portfolio }}">{{ LANG.portfolio }}</a></li>  
+             </ul>     
+        </div>
+        <div class="footer-col">
+             <div class="title">{{ LANG.services }}</div>
+             <ul>
+                <!--<li><a href="/warranty.html" title="{{ LANG.warranty }}">{{ LANG.warranty }}</a></li> -->
+                <li><a href="/simulator" title="{{ LANG.offerSimulator }}">{{ LANG.offerSimulator }}</a></li>  
+             </ul>   
+        </div>
+    </div>
+    <div class="footer-col-menu">
+        <div class="footer-col">
+             <div class="title">Customer Service</div>
+             <ul>
+                <li><a href="/contact-us" title="{{ LANG.contacUs }}">{{ LANG.contacUs }}</a></li> 
+                <li><a href="/distributors" title="{{ LANG.distributors }}">{{ LANG.distributors }}</a></li> 
+                <li><a href="/stores" title="{{ LANG.stores }}">{{ LANG.stores }}</a></li>  
+             </ul>  
+        </div>
+        <div class="footer-col">
+            <div class="title">Resources</div>
+             <ul>
+                <li><a href="/articles" title="Inspiration">Inspiration</a></li>  
+                <li><a href="/katalog" title="{{ LANG.catalogs }}">Catalogs</a></li>  
+             </ul>  
+        </div>
+    </div>
+    <div class="footer-col-menu footer-category-menu">
+         <div class="title">{{ LANG.products }}</div>
+         <ul>
+          <li><a href="/product-categories" title="Semua Kategori">Semua Kategori</a></li>
+          {% for row in itemCategory %}
+              <li><a href="/products/{{ row.name|urlfilter }}/cat={{ row.pkey }}/" title="{{ row.name|raw }}">{{ row.name|raw }}</a></li>
+          {% endfor %}   
+        </ul>   
+    </div>
+    <div class="footer-col-menu  support-panel">
+         <div class="title-gray">{{ LANG.deliverySupport }}</div>
+         <ul>  
+            <li><img src="{{ TEMPLATE_IMG_PATH }}logo-hor.png"></li> 
+            <li><img src="{{ TEMPLATE_IMG_PATH }}logo-jne.png"></li> 
+         </ul>
+         <div style="clear: both;height: 0.5em"></div>
+         <div class="title-gray">{{ LANG.paymentPartner }}</div>
+         <ul>  
+            <li><img src="{{ TEMPLATE_IMG_PATH }}logo-master.png"></li> 
+            <li><img src="{{ TEMPLATE_IMG_PATH }}logo-visa.png"></li> 
+            <li><img src="{{ TEMPLATE_IMG_PATH }}logo-gopay.png"></li> 
+            <li><img src="{{ TEMPLATE_IMG_PATH }}logo-ovo.png"></li> 
+        </ul>   
+         <div style="clear: both;height: 0.5em"></div>
+         <div class="title-gray">{{ LANG.paymentPartner }}</div>
+         <ul>  
+            <li><img src="{{ TEMPLATE_IMG_PATH }}logo-tokopedia.png"></li> 
+            <li><img src="{{ TEMPLATE_IMG_PATH }}logo-shopee.png"></li>  
+            <li><img src="{{ TEMPLATE_IMG_PATH }}logo-lazada.png"></li> 
+            <li><img src="{{ TEMPLATE_IMG_PATH }}logo-bukalapak.png"></li>
+        </ul>    
+    </div>
+    </div>
+    </div>
+</div>
+
+<div style="clear:both;"></div> 
+</div>
+ 
+</div> 
+    
+<!-- set constant first -->
+<script type="text/javascript">
+    
+var $phpConfig = new Array();
+$phpConfig['uploadTempDocShort']  = "{{ UPLOAD_TEMP_DOC_SHORT }}";
+$phpConfig['uploadTempURL']  = "{{ UPLOAD_TEMP_URL }}";
+const  PHP_CONFIG = $phpConfig; 
+</script>    
+<script type="text/javascript" src="{{ TEMPLATE_JS_PATH }}critical-js.min.js"></script>
+    
+<script type="text/javascript"> 
+
+    var cssLoaded = false;
+    
+    var dfLoadStatus = 0;
+    var dfLoadFiles = [ 
+      /*["{{ TEMPLATE_JS_PATH }}bootstrap.min.js"], */ // dipindahkan,  bermasalah sejak pake index.js
+      ["{{ TEMPLATE_JS_PATH }}jquery.formatCurrency-1.4.0.min.js"],
+      ["{{ TEMPLATE_JS_PATH }}jquery.mmenu.min.all.js"],  
+      {% block dfLoadFiles %}{% endblock %} // ntah knp gk bisa ditaro di bwh template.min
+      [ 
+       "{{ TEMPLATE_JS_PATH }}jquery.easing.1.3.min.js",  
+       "{{ TEMPLATE_JS_PATH }}template-1.5.min.js"
+      ]
+     ];
+      
+    function downloadJSAtOnload() {
+        
+        //load css first
+        if (!cssLoaded){
+            //loadCSS( "{{ TEMPLATE_CSS_PATH }}jquery-font-awesome.min.css" );  
+            //loadCSS( "{{ TEMPLATE_CSS_PATH }}webStyle.1.0.min.css" );
+            cssLoaded = true;
+        }
+        
+        if (!dfLoadFiles.length) return;
+
+        var dfGroup = dfLoadFiles.shift();
+        dfLoadStatus = 0;
+ 
+        for(var i = 0; i<dfGroup.length; i++) {
+            dfLoadStatus++;
+            var element = document.createElement('script');
+            element.src = dfGroup[i];
+            element.onload = element.onreadystatechange = function() {
+                if ( ! this.readyState || this.readyState == 'complete') {
+                    dfLoadStatus--;
+                    if (dfLoadStatus==0) downloadJSAtOnload();
+                }
+            };
+            document.body.appendChild(element); 
+      } 
+    }
+     
+    if (window.addEventListener)
+        window.addEventListener("load", downloadJSAtOnload, false);
+    else if (window.attachEvent)
+        window.attachEvent("onload", downloadJSAtOnload);
+    else window.onload = downloadJSAtOnload;
+    
+</script>   
+    
+<script type="text/javascript"> 
+     function onLoadScript(){  
+        {% for activeMenuItem in ACTIVE_MENU %}
+            $("[name='{{ activeMenuItem }}']").addClass("selected");    
+        {% endfor %} 
+	        
+        $('nav#side-menu').mmenu(); 
+		var API = $("#side-menu").data( "mmenu" );  
+		API.close();  
+				
+		$("#btn-side-menu").click(function() {  API.open();	});	 
+        loadSubMenuProfile();  
+         {% block JSOnLoad %}{% endblock %}
+     }
+    
+</script>   
+{% block JS %}{% endblock %}
+</body> 
+</html>
+{{ settings.chatSupport|raw }}
+{{ settings.googleAnalytics|raw }}

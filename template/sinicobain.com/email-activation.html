@@ -1,0 +1,11 @@
+{% extends "email-template.html" %} 
+{% block content %}
+Hi {{ CUSTOMER_NAME|raw }},
+ <br>
+Terima kasih telah melakukan registrasi. Untuk menyelesaikan proses registrasi silahkan klik link dibawah ini untuk melakukan verifikasi akun dan email Anda.
+<br><br> 
+<a href="{{ ACTIVATION_LINK|raw }}" target="_blank">{{ ACTIVATION_LINK|raw }}</a>
+<br><br> 
+Salam,<br>
+{{ COMPANY_NAME|raw }}
+{% endblock %}

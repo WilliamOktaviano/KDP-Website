@@ -1,0 +1,62 @@
+{% extends "template.html" %}
+{% block pagetitle %}{{ LANG.article}} | {{ parent() }}{% endblock %}
+
+{% block JS %}
+<script type="text/javascript" src="{{ TEMPLATE_JS_PAGE_PATH }}articles.min.js"></script>  
+<script type="text/javascript">
+jQuery(document).ready(function(){   
+ var opt = new Array();   
+ var articles = new Articles(opt);
+ articles.loadOnReady();   
+});
+    
+</script> 
+{% endblock %}
+
+{% block content %}
+{% set bannerIndex = banner['articles'][0] %}
+<div class="banner banner-content" style="background-image:url('/phpthumb/phpThumb.php?src={{ PHPTHUMB_URL_SRC }}banner/{{ bannerIndex.pkey }}/{{ bannerIndex.file }}&f=png&hash={{ bannerIndex.phpThumbHash }}')">
+<div class="content-wrapper">
+<div class="div-table banner-text-panel">
+    <div class="div-table-row">
+        <div class="div-table-col" style="vertical-align: middle; height: 100%">
+            <div class="simple-parallax fade-up">{{ bannerIndex.trdesc|raw }}</div>
+        </div>
+    </div>
+</div>
+</div>    
+</div>   
+<div class="content-wrapper">    
+    
+<div class="category">
+  <ul class="user-select-none">
+   {% for data in rsArticleCategory %}
+    <li><a href="/articles/{{ data.name|urlfilter }}/cat={{ data.pkey }}">{{ data.name|raw }}</a></li>
+   {% endfor %}  
+  </ul>
+</div>    
+<div style="clear: both; height: 2em"></div>    
+<ul class="article-list">
+    {% for data in rsArticles %}
+    <li>
+        <div class="content-panel auto-height">
+        <a href="/inspirasi/{{ data.categoryname|urlfilter }}/{{ data.title|urlfilter|raw }}/{{ data.pkey }}" title="{{ data.title }}"><div class="image" alt="{{ data.title }}" style="background-image:url('/phpthumb/phpThumb.php?src={{ PHPTHUMB_URL_SRC }}article/{{ data.pkey }}/{{ data.file }}&hash={{ data.phpThumbHash }}')"></div></a>
+        <div class="information">
+        <a href="/inspirasi/{{ data.categoryname|urlfilter }}/{{ data.title|urlfilter|raw }}/{{ data.pkey }}" title="{{ data.title }}"><h2>{{ data.title|upper|raw }}</h2></a>
+        <div class="publishdate">{{ data.publishdate|date("d M Y") }}</div>
+        <div style="clear:both;height:.5em"></div>
+        <div class="shortdesc">{{ data.shortdesc|raw }} </div>
+        </div>
+        </div>
+    </li>
+    {% endfor %}  
+</ul>   
+ 
+{% set path = 'articles/' %}
+{% if not categoryPath is empty  %}
+{% set path = path ~ categoryPath[0]['name']|urlfilter ~ '/cat=' ~ categoryPath[0]['pkey']  %}
+{% endif %}
+    
+{{ macro.buildPageList(_context,path) }}
+</div>  
+{% endblock %}

@@ -1,0 +1,84 @@
+{% extends "template.html" %}
+{% block pagetitle %}{{ rsArticle[0].title|raw }} | {{ parent() }}{% endblock %}
+
+{% block CSS %}
+<link rel="stylesheet" type="text/css" href="{{ TEMPLATE_CSS_PATH }}slick.css">
+<link rel="stylesheet" type="text/css" href="{{ TEMPLATE_CSS_PATH }}slick-theme.css">
+{% endblock %}
+
+{% block JS %}
+<script type="text/javascript" src="{{ TEMPLATE_JS_PAGE_PATH }}articles.min.js"></script>  
+<script type="text/javascript" src="{{ TEMPLATE_JS_PATH }}slick.min.js"></script>
+<script type="text/javascript">
+jQuery(document).ready(function(){   
+ var opt = new Array();   
+ var articles = new Articles(opt);
+ articles.loadOnReady();   
+});
+    
+</script> 
+{% endblock %}
+
+{% block content %}
+{% set bannerIndex = banner['articles'][0] %}
+<div class="banner banner-content" style="background-image:url('/phpthumb/phpThumb.php?src={{ PHPTHUMB_URL_SRC }}banner/{{ bannerIndex.pkey }}/{{ bannerIndex.file }}&f=png&hash={{ bannerIndex.phpThumbHash }}')">
+<div class="content-wrapper">
+<div class="div-table banner-text-panel">
+    <div class="div-table-row">
+        <div class="div-table-col" style="vertical-align: middle; height: 100%">
+            <div class="simple-parallax fade-up">{{ bannerIndex.trdesc|raw }}</div>
+        </div>
+    </div>
+</div>
+</div>    
+</div>   
+<div class="article-detail">
+<div style="clear:both;height:1em"></div>
+<div class="content-panel" style="max-width:1000px">
+<div class="title">
+<h1>{{ rsArticle[0].title|raw }}</h1>
+</div>
+<div class="publishdate">{{ rsArticle[0].publishdate|date("d M Y") }}</div>
+<div class="detail">{{ rsArticle[0].detail|raw }}</div>
+<div style="clear:both; height: 2em"></div>
+<ul class="tag">
+{% for data in tag %}
+    <li><a href="/articles/?tag={{ data|trim }}">{{ data|trim }}</a></li>
+{% endfor %}
+</ul>
+<div style="clear: both; height: 5em"></div> 
+    
+<div style="clear: both; height: 5em"></div> 
+<div class="subtitle">{{ LANG.latestArticles }}</div>   
+<ul class="featured-article">
+{% for data in rsLatestArticles %}   
+     <li>
+        <div class="content-panel auto-height">
+        <a href="/inspirasi/{{ data.categoryname|urlfilter }}/{{ data.title|urlfilter|raw }}/{{ data.pkey }}" title="{{ data.title }}"><div class="image" alt="{{ data.title }}" style="background-image:url('/phpthumb/phpThumb.php?src={{ PHPTHUMB_URL_SRC }}article/{{ data.pkey }}/{{ data.file }}&hash={{ data.phpThumbHash }}')"></div></a>
+        <div class="information">
+        <a href="/inspirasi/{{ data.categoryname|urlfilter }}/{{ data.title|urlfilter|raw }}/{{ data.pkey }}" title="{{ data.title }}"><h2>{{ data.title|upper|raw }}</h2></a>
+        </div>
+        </div>
+    </li>
+ {% endfor %}   
+</ul> 
+    
+<div style="clear: both; height: 5em"></div> 
+<div class="subtitle">{{ LANG.featuredArticles }}</div>   
+<ul class="featured-article">
+{% for data in rsLatestFeaturedArticles %}   
+     <li>
+        <div class="content-panel auto-height">
+        <a href="/inspirasi/{{ data.categoryname|urlfilter }}/{{ data.title|urlfilter|raw }}/{{ data.pkey }}" title="{{ data.title }}"><div class="image" alt="{{ data.title }}" style="background-image:url('/phpthumb/phpThumb.php?src={{ PHPTHUMB_URL_SRC }}article/{{ data.pkey }}/{{ data.file }}&hash={{ data.phpThumbHash }}')"></div></a>
+        <div class="information">
+        <a href="/inspirasi/{{ data.categoryname|urlfilter }}/{{ data.title|urlfilter|raw }}/{{ data.pkey }}" title="{{ data.title }}"><h2>{{ data.title|upper|raw }}</h2></a>
+        </div>
+        </div>
+    </li>
+ {% endfor %}   
+</ul> 
+
+<div style="clear: both; height: 5em"></div>
+</div>
+</div>
+{% endblock %}

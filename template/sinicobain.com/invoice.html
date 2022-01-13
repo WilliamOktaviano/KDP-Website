@@ -1,0 +1,24 @@
+{% extends "template.html" %}
+{% block pagetitle %}{{ LANG.payment }} | {{ parent() }}{% endblock %} 
+
+{% block content %} 
+{% set bannerIndex = banner['payment'][0] %}
+<div class="banner banner-content" style="background-image:url('/phpthumb/phpThumb.php?src={{ PHPTHUMB_URL_SRC }}banner/{{ bannerIndex.pkey }}/{{ bannerIndex.file }}&f=png&hash={{ bannerIndex.phpThumbHash }}')">
+<div class="content-wrapper">
+<div class="div-table banner-text-panel">
+    <div class="div-table-row">
+        <div class="div-table-col" style="vertical-align: middle; height: 100%">
+            <div class="simple-parallax fade-up">{{ bannerIndex.trdesc|raw }}</div>
+        </div>
+    </div>
+</div>
+</div>    
+</div> 
+<div class="content-wrapper">  
+<div class="cart-table">
+    <div style="clear:both; height: 1em"></div>   
+    <div class="invoice-panel">{{ invoice|raw }}</div> 
+</div>
+<div style="clear:both; height: 3em"></div> 
+</div>
+{% endblock %}

@@ -1,0 +1,190 @@
+{% extends "template.html" %}
+{% block pagetitle %}{{ LANG.profile }} | {{ parent() }}{% endblock %}
+{% block JS %}
+<script type="text/javascript" src="{{ TEMPLATE_JS_PAGE_PATH }}profile.min.js"></script>
+<script type="text/javascript">
+jQuery(document).ready(function(){  
+ var opt = new Array();    
+ var errMsg = new Array();     
+ var lang = new Array();     
+ errMsg['name'] = {{ ERRORMSG.name|json_encode()|raw }}; 
+ errMsg['email'] = {{ ERRORMSG.email|json_encode()|raw }}; 
+ errMsg['passwordConfirmation'] = {{ ERRORMSG.passwordConfirmation|json_encode()|raw }}; 
+ errMsg['username'] = {{ ERRORMSG.username|json_encode()|raw }}; 
+ errMsg['password'] = {{ ERRORMSG.password|json_encode()|raw }};  
+ //lang['registrationSuccessMessage'] = "{{ LANG.registrationSuccessMessage|raw }}";
+    
+ opt['errMsg'] = errMsg;
+ opt['lang'] = lang;
+ var profile = new Profile(opt);
+ profile.loadOnReady();  
+})
+
+</script>
+<script src='https://www.google.com/recaptcha/api.js'></script>
+{% endblock %}
+ 
+{% block content %}
+{% set bannerIndex = banner[PAGE_ID][0] %}
+<div class="banner banner-content" style="background-image:url('/phpthumb/phpThumb.php?src={{ PHPTHUMB_URL_SRC }}banner/{{ bannerIndex.pkey }}/{{ bannerIndex.file }}&f=png&hash={{ bannerIndex.phpThumbHash }}')">
+<div class="content-wrapper">
+<div class="div-table banner-text-panel">
+    <div class="div-table-row">
+        <div class="div-table-col" style="vertical-align: middle; height: 100%">
+            <div class="simple-parallax fade-up">{{ bannerIndex.trdesc|raw }}</div>
+        </div>
+    </div>
+</div>
+</div>    
+</div> 
+
+
+<div class="content-wrapper">  
+	<div class="div-table profile-submenu" style="width:100%">
+		<div class="div-table-row">
+			<div class="div-table-col side-menu">
+				{{ macro.buildProfileSubmenu(_context) }}
+			</div>
+			<div class="div-table-col"> 
+					<div class="form-panel">   
+					<form id="form-editprofile" method="post" class="form-horizontal form-default prevent-form-submit" action="/ajax-member.php">
+					{{ inputHidId|raw }}
+					{{ hidModifiedOn|raw }}
+					{{ inputHidAction|raw }}
+					<div class="notification-msg"></div> 
+					<div class="form-group">
+					<label class="col-lg-4 control-label">{{ LANG.memberID|upper }}</label>
+					<div class="col-lg-8">
+					{{ inputUserCode|raw }}
+					</div>
+					</div>
+					<div class="form-group">
+					<label class="col-lg-4 control-label">{{ LANG.username|upper }}</label>
+					<div class="col-lg-8">
+					{{ inputUserName|raw }}
+					</div>
+					</div>
+					<div class="form-group">
+					<label class="col-lg-4 control-label">{{ LANG.membership|upper }}</label>
+					<div class="col-lg-8">
+					{{ inputMembership|raw }}
+					{% if rs.membershiplevel == 1 %}
+						<div style="margin-top:0.5em"><a href="/upgrade-membership">Upgrade Membership</a></div>
+					{% endif %}
+					</div>
+					</div> 
+					{% if rs.membershiplevel > 1 %}
+					<div class="form-group">
+					<label class="col-lg-4 control-label">{{ LANG.expDate|upper }}</label>
+					<div class="col-lg-8">
+					{{ inputMembershipExpDate|raw }} 
+					</div>
+					</div>
+					{% endif %}
+                    <div class="form-group">
+					<label class="col-lg-4 control-label"></label>
+					<div class="col-lg-8 text-red-cardinal">
+					<a href="#">{{ LANG.membershipUpgrade|raw }}</a>
+					</div>
+					</div>
+					<div class="form-group">
+					<label class="col-lg-4 control-label">{{ LANG.currentPassword|upper }}</label>
+					<div class="col-lg-8">
+					{{ inputCurrentPassword|raw }}
+					</div>
+					</div>
+					<div class="form-group">
+					<label class="col-lg-4 control-label"></label>
+					<div class="col-lg-8 text-red-cardinal">
+					{{ LANG.emptyFieldPasswordDontChange|raw }}
+					</div>
+					</div>
+					<div class="form-group">
+					<label class="col-lg-4 control-label">{{ LANG.newPassword|upper }}</label>
+					<div class="col-lg-8">
+					{{ inputNewPassword|raw }}
+					</div>
+					</div>
+					<div class="form-group">
+					<label class="col-lg-4 control-label">{{ LANG.newPasswordConfirmation|upper }}</label>
+					<div class="col-lg-8">
+					{{ inputPasswordConfirmation|raw }}
+					</div>
+					</div>
+					<div class="form-group">
+					<label class="col-lg-4 control-label">{{ LANG.name|upper }}</label>
+					<div class="col-lg-8">
+					{{ inputName|raw }}
+					</div>
+					</div>
+					<div class="form-group">
+					<label class="col-lg-4 control-label">{{ LANG.email|upper }}</label>
+					<div class="col-lg-8">
+					{{ inputEmail|raw }}
+					</div>
+					</div>
+					<div class="form-group">
+					<label class="col-lg-4 control-label">{{ LANG.address|upper }}</label>
+					<div class="col-lg-8">
+					{{ inputAddress|raw }}
+					</div>
+					</div>   
+					<div class="form-group">
+					<label class="col-lg-4 control-label">{{ LANG.zipcode|upper }}</label>
+					<div class="col-lg-8">
+					{{ inputZipcode|raw }}
+					</div>
+					</div>    
+					<div class="form-group">
+					<label class="col-lg-4 control-label">{{ LANG.phone|upper }}</label>
+					<div class="col-lg-8">
+					{{ inputPhone|raw }}
+					</div>
+					</div> 
+
+					<div class="form-group">
+					{{ hidLatLang|raw }}
+					<label class="col-lg-4 control-label">{{ LANG.dropOffLocation|upper }}</label>
+					<div class="col-lg-8">
+					<div class="location-map">
+					{{ hidLatLng|raw }}
+					<div class="flex">
+						<div class="consume">{{ inputMapAddress|raw }}</div>
+						<div class="current-loc"><i class="fas fa-map-marker-alt"></i></div>
+					</div>
+					<div id="map"></div>   
+					</div>
+					</div>
+					</div> 
+
+					 <!-- Async script executes immediately and must be after any DOM elements used in callback. -->
+					<script src="https://maps.googleapis.com/maps/api/js?key={{ settings.mapAPIKey }}&callback=initMap&libraries=places&v=weekly" async></script>
+					<script type="text/javascript" src="{{ TEMPLATE_JS_PATH }}gmap.min.js"></script>
+					<script type="text/javascript">
+					function initMap(){ 
+					var mapObj = new GMap({'mapObj':$("#map"), 'autocompleteObj' : $("[name=mapAddress]"), 'latlngObj' : $("[name=hidLatLng]"), 'currentLocObj' :  $(".current-loc") });    
+					mapObj.initAutocomplete();    
+					}
+					</script>
+
+					<div class="form-group">
+					<label class="col-lg-4 control-label"></label>
+					<div class="col-lg-8">
+					<div class="g-recaptcha" data-sitekey="{{ settings.reCaptchaSiteKey }}"></div>
+					</div>
+					</div>
+					<div class="form-group">
+					<label class="col-lg-4 control-label"></label>
+					<div class="col-lg-8" style="text-align: center">
+					{{ btnSubmit|raw }}
+					</div>
+					</div>
+					</form>
+					</div>
+			</div>
+		</div>
+	</div>
+ 
+<div style="clear: both; height: 2em"></div>
+</div> 
+{% endblock %}

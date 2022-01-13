@@ -1,0 +1,27 @@
+{% set TEMPLATE_JS_PAGE_PATH = TEMPLATE_JS_PAGE_PATH ~ 'formJS-1.5/' %}
+<script type="text/javascript" src="{{ TEMPLATE_JS_PAGE_PATH }}popup-voucher.min.js"></script>
+<script type="text/javascript"> 
+jQuery(document).ready(function(){     
+ var opt = new Array();
+ opt['decimal'] = 0;
+ var popupVoucher = new PopupVoucher(opt);
+ popupVoucher.loadOnReady();    
+});
+</script> 
+<div id="popup-voucher" class="div-table">
+    <div class="div-table-row">
+        <div class="div-table-col">
+            <div class="content-panel">   
+				<ul class="voucher-list">
+				{% for data in rsVoucher %}
+					<li rel-label="{{ data.voucherlabel }}" rel-key="{{ data.pkey }}">
+						<div class="title">{{ data.voucherlabel }}</div>
+						<div class="desc">{{ data.shortdesc }}</div>
+						<div class="expdate">{{ LANG.expiredDate }}: {{ data.expdate|date('d M Y') }}</div>
+					</li>
+				{% endfor %}
+				</ul> 
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,110 @@
+{% extends "template.html" %}
+{% block pagetitle %}{{ LANG.recruitment }} | {{ parent() }}{% endblock %}
+{% block CSS %}
+<link rel="stylesheet" type="text/css" href="{{ TEMPLATE_CSS_PATH }}fileuploader.css"> 
+{% endblock %}
+{% block JS %}
+<script type="text/javascript" src="{{ TEMPLATE_JS_PATH }}fileuploader.min.js"></script>  
+<script type="text/javascript" src="{{ TEMPLATE_JS_PAGE_PATH }}recruitment.min.js"></script>
+<script type="text/javascript">
+jQuery(document).ready(function(){  
+ var opt = new Array();    
+ var errMsg = new Array();     
+ var lang = new Array();     
+ errMsg['name'] = {{ ERRORMSG.name|json_encode()|raw }}; 
+ errMsg['email'] = {{ ERRORMSG.email|json_encode()|raw }}; 
+ errMsg['phone'] = {{ ERRORMSG.phone|json_encode()|raw }}; 
+ errMsg['address'] = {{ ERRORMSG.address|json_encode()|raw }}; 
+
+ opt['fileFolder'] = "{{ uploadFileFolder }}";    
+ opt['fileUploaderTarget'] = 'item-file-uploader';   
+ opt['errMsg'] = errMsg;
+ opt['lang'] = lang;
+ var recruitment = new Recruitment(opt);
+ recruitment.loadOnReady();  
+})
+
+</script>
+<script src='https://www.google.com/recaptcha/api.js'></script>
+{% endblock %}
+ 
+{% block content %}
+{% set bannerIndex = banner[PAGE_ID][0] %}
+<div class="banner banner-content" style="background-image:url('/phpthumb/phpThumb.php?src={{ PHPTHUMB_URL_SRC }}banner/{{ bannerIndex.pkey }}/{{ bannerIndex.file }}&f=png&hash={{ bannerIndex.phpThumbHash }}')">
+<div class="content-wrapper">
+<div class="div-table banner-text-panel">
+    <div class="div-table-row">
+        <div class="div-table-col" style="vertical-align: middle; height: 100%">
+            <div class="simple-parallax fade-up">{{ bannerIndex.trdesc|raw }}</div>
+        </div>
+    </div>
+</div>
+</div>    
+</div> 
+
+<div class="content-wrapper">  
+<div class="subtitle">{{ rsJob[0].title|raw }}</div>
+<div class="form-panel">   
+<form id="form-recruitment" method="post" class="form-horizontal form-default prevent-form-submit label-style" action="/ajax-recruitment.php">
+{{ inputHidJobKey|raw }}
+{{ inputHidAction|raw }}
+<div class="notification-msg"></div> 
+<div class="form-group">
+<label class="col-lg-4 control-label">{{ LANG.name|upper }}</label>
+<div class="col-lg-8">
+{{ inputName|raw }}
+</div>
+</div>
+<div class="form-group">
+<label class="col-lg-4 control-label">{{ LANG.email|upper }}</label>
+<div class="col-lg-8">
+{{ inputEmail|raw }}
+</div>
+</div>
+    
+<div class="form-group">
+<label class="col-lg-4 control-label">{{ LANG.phone|upper }}</label>
+<div class="col-lg-8">
+{{ inputPhone|raw }}
+</div>
+</div> 
+<div class="form-group">
+<label class="col-lg-4 control-label">{{ LANG.address|upper }}</label>
+<div class="col-lg-8">
+{{ inputAddress|raw }}
+</div>
+</div>  
+<div style="clear:both; height: 1em"></div>  
+<div class="form-group"> 
+    <label class="col-lg-4 control-label"></label>
+    <div class="col-xs-8">  
+         <!-- image uploader --> 
+        <div class="item-file-uploader">
+            <ul class="file-list" ></ul>
+            <div style="clear:both; height:1em; "></div>
+            <div class="file-uploader">	
+                <noscript><p>Please enable JavaScript to use file uploader.</p></noscript> 
+            </div>
+          </div>  
+        <!-- image uploader -->  
+    </div> 
+</div>  
+<div style="clear:both; height: 2em"></div>  
+
+<div class="form-group">
+<label class="col-lg-4 control-label"></label>
+<div class="col-lg-8">
+<div class="g-recaptcha" data-sitekey="{{ settings.reCaptchaSiteKey }}"></div>
+</div>
+</div>
+<div class="form-group">
+<label class="col-lg-4 control-label"></label>
+<div class="col-lg-8" style="text-align: center">
+{{ btnSubmit|raw }}
+</div>
+</div>
+</form>
+</div>
+<div style="clear: both; height: 2em"></div>
+</div> 
+{% endblock %}

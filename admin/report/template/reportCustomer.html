@@ -1,0 +1,70 @@
+{% extends "template.html" %} 
+{% block JS %}
+<script>
+    jQuery(document).ready(function(){   
+          
+	});
+     
+/*(function () {
+  'use strict';
+  var container = document.querySelector('.container');
+  var table = document.querySelector('table');
+  var leftHeaders = [].concat.apply([], document.querySelectorAll('tbody th'));
+  var topHeaders = [].concat.apply([], document.querySelectorAll('thead th'));
+
+  var topLeft = document.createElement('div');
+  var computed = window.getComputedStyle(topHeaders[0]);
+  container.appendChild(topLeft);
+  topLeft.classList.add('top-left');
+  topLeft.style.width = computed.width;
+  topLeft.style.height = computed.height;
+
+  container.addEventListener('scroll', function (e) {
+    var x = container.scrollLeft;
+    var y = container.scrollTop;
+
+    leftHeaders.forEach(function (leftHeader) {
+      leftHeader.style.transform = translate(x, 0);
+    });
+    topHeaders.forEach(function (topHeader, i) {
+      if (i === 0) {
+        topHeader.style.transform = translate(x, y);
+      } else {
+        topHeader.style.transform = translate(0, y);
+      }
+    });
+    topLeft.style.transform = translate(x, y);
+  });
+
+  function translate(x, y) {
+    return 'translate(' + x + 'px, ' + y + 'px)';
+  }
+})();*/
+</script>
+{% endblock %}
+{% block filter %}
+ <div> 
+    <div class="form-group">
+        <label class="col-xs-12 control-label" >Kode</label>
+        <div class="col-xs-12">
+            {{ inputCustomerCode|raw }}
+        </div>
+    </div>
+	<div class="form-group">
+        <label class="col-xs-12 control-label" >Nama</label>
+        <div class="col-xs-12">
+            {{ inputCustomerName|raw }}
+        </div>
+    </div> 
+     <div class="form-group">
+        <label class="col-xs-12 control-label" >{{ LANG.category }}</label>
+        <div class="col-xs-12"> {{ inputSelCategory|raw }} </div> 
+    </div>  
+    <div class="form-group">
+        <label class="col-xs-12 control-label" >Status</label>
+        <div class="col-xs-12">
+            {{ inputSelStatus|raw }}
+        </div>
+    </div>    
+ </div>	 
+{% endblock %}

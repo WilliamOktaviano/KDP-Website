@@ -1,0 +1,60 @@
+{% extends "template.html" %}
+{% block CSS %}
+<link rel="stylesheet" type="text/css" href="{{ TEMPLATE_CSS_PATH }}ekko-lightbox.min.css"> 
+{% endblock %}
+{% block dfLoadFiles %} 
+    ["{{ TEMPLATE_JS_PATH }}ekko-lightbox.min.js"],
+{% endblock %} 
+
+{% block JSOnLoad %}
+
+        $(document).on('click', '[data-toggle="lightbox"]', function(event) {
+            event.preventDefault(); 
+            $(this).ekkoLightbox(); 
+        });
+
+{% endblock %} 
+
+{% block pagetitle %}{% if not rsCategory is empty %} {{ rsCategory[0].name|raw }} {% else %} {{ LANG.gallery }} {% endif %}  | {{ parent() }}{% endblock %}
+{% block content %}
+{% set bannerIndex = banner['galleryHR'][0] %}
+<div class="banner banner-content" style="background-image:url('/phpthumb/phpThumb.php?src={{ PHPTHUMB_URL_SRC }}banner/{{ bannerIndex.pkey }}/{{ bannerIndex.file }}&f=png&hash={{ bannerIndex.phpThumbHash }}')">
+<div class="content-wrapper">
+<div class="div-table banner-text-panel">
+    <div class="div-table-row">
+        <div class="div-table-col" style="vertical-align: middle; height: 100%">
+            <div class="simple-parallax fade-up">{{ bannerIndex.trdesc|raw }}</div>
+        </div>
+    </div>
+</div>
+</div>    
+</div>  
+<div class="content-wrapper"> 
+<ul class="gallery-list" style="padding: 2em 0">
+{% for data in rsGallery %}
+<li>
+<div class="content-panel auto-height">
+<a href="/download.php?filename=gallery/{{ data.pkey }}/{{ data.file }}" data-toggle="lightbox" data-title="{{ data.name|raw }}" data-gallery="{{ data.pkey }}">
+    <div class="image-panel" alt="{{ data.name }}" style="background-image:url('/phpthumb/phpThumb.php?src={{ PHPTHUMB_URL_SRC }}gallery/{{ data.pkey }}/{{ data.file }}&hash={{ data.phpThumbHash }}')"></div>
+</a>    
+
+{% for img in data.rsGalleryImage %}
+    {% if loop.index0 > 0 %}
+    <div data-toggle="lightbox" data-gallery="{{ data.pkey }}" data-remote="/download.php?filename=gallery/{{ data.pkey }}/{{ img.file }}" data-title="{{ data.name|raw }}"></div>
+    {% endif %}
+{% endfor %}
+    
+<!--<a href="/gallery-hr-detail/{{ data.linktitle|urlfilter|raw }}/{{ data.pkey }}" title="{{ data.name }}"><div class="image-panel" alt="{{ data.name }}" style="background-image:url('/phpthumb/phpThumb.php?src={{ PHPTHUMB_URL_SRC }}gallery/{{ data.pkey }}/{{ data.file }}&hash={{ data.phpThumbHash }}')"></div></a>-->
+<div class="information">
+<!--<a class="gallery-name" href="/gallery-detail/{{ data.pkey }}/" title="{{ data.name }}"><h2>{{ data.name|upper|raw }}</h2></a>-->
+<div class="gallery-name">{{ data.name }}</div> 
+</div>
+</div>
+</li>
+{% endfor %}  
+</ul>
+    
+{% set path = 'gallery-hr/' %} 
+{{ macro.buildPageList(_context,path) }}
+    
+{% endblock %}

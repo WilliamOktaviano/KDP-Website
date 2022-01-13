@@ -1,0 +1,38 @@
+{% extends "template.html" %}  
+{% block pagetitle %}{% if not categoryPath is empty %} {{ categoryPath[0].name|raw }} {% else %} {{ LANG.allProducts }} {% endif %} | {{ parent() }}{% endblock %} 
+
+{% block JS %} 
+
+{% endblock %} 
+
+{% block content %} 
+{% set bannerIndex = banner['products'][0] %}
+<div class="banner banner-content" style="background-image:url('/phpthumb/phpThumb.php?src={{ PHPTHUMB_URL_SRC }}banner/{{ bannerIndex.pkey }}/{{ bannerIndex.file }}&f=png&hash={{ bannerIndex.phpThumbHash }}')">
+<div class="content-wrapper">
+<div class="div-table banner-text-panel">
+    <div class="div-table-row">
+        <div class="div-table-col" style="vertical-align: middle; height: 100%">
+            <div class="simple-parallax fade-up">{{ bannerIndex.trdesc|raw }}</div>
+        </div>
+    </div>
+</div>
+</div>    
+</div>  
+<div class="content-wrapper">      
+<div class="category">  
+    <ul class="category-list">  
+        {% for data in itemCategory %} 
+        <li>
+            <a href="products/{{ data.name|urlfilter }}/cat={{ data.pkey }}"> 
+            <div class="content-panel">
+                <div class="image" style="background-image:url('/phpthumb/phpThumb.php?src={{ PHPTHUMB_URL_SRC }}item-category/{{ data.pkey }}/{{ data.file }}&f=png&hash={{ data.phpThumbHash }}')"></div>
+                <div class="auto-height category-name">{{ data.name }}</div> 
+            </div>       
+            </a>
+        </li>
+        {% endfor %}  
+    </ul> 
+</div>    
+<div style="clear: both; height: 5em"></div>  
+</div> 
+{% endblock %}

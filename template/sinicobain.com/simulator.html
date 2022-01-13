@@ -1,0 +1,153 @@
+{% extends "template.html" %}
+{% block JS %}
+<script type=text/javascript src='https://www.google.com/recaptcha/api.js'></script>
+<script type="text/javascript" src="{{ TEMPLATE_JS_PAGE_PATH }}simulator.min.js"></script>
+<script type="text/javascript">
+jQuery(document).ready(function(){  
+ var opt = new Array();    
+ var errMsg = new Array();     
+ var lang = new Array();     
+ errMsg['name'] = {{ ERRORMSG.name|json_encode()|raw }}; 
+                       
+ opt['errMsg'] = errMsg;
+ opt['lang'] = lang;
+ opt['decimal'] = 0;
+ opt['domainName'] = '{{ DOMAIN_NAME }}'; 
+ var simulator = new Simulator(opt);
+ simulator.loadOnReady(); 
+})
+</script>
+{% endblock %}
+
+{% block content %} 
+{% set bannerIndex = banner[PAGE_ID][0] %}
+<div class="banner banner-content" style="background-image:url('/phpthumb/phpThumb.php?src={{ PHPTHUMB_URL_SRC }}banner/{{ bannerIndex.pkey }}/{{ bannerIndex.file }}&f=png&hash={{ bannerIndex.phpThumbHash }}')">
+<div class="content-wrapper">
+<div class="div-table banner-text-panel">
+    <div class="div-table-row">
+        <div class="div-table-col" style="vertical-align: middle; height: 100%">
+            <div class="simple-parallax fade-up">{{ bannerIndex.trdesc|raw }}</div>
+        </div>
+    </div>
+</div>
+</div>    
+</div> 
+
+
+<div class="content-wrapper">   
+<div style="clear: both; height: 2em"></div>  
+
+{% if loginName is empty %}
+<div style="text-align:center">{{ LANG.loginRequired|raw }}</div>
+{% else %}
+<form id="defaultForm" method="post" class="form-horizontal prevent-form-submit" action="/ajax-simulator.php">
+{{ inputHidAction|raw }}
+{{ inputHidId|raw }}
+<div class="notification-msg"></div>
+     
+<div class="content-panel">
+<div class="form-group title" style="margin: 0">
+<label class="col-lg-2 control-label">{{ LANG.projectName|upper }}</label>
+<div class="col-lg-10">
+{{ inputName|raw }}
+</div>
+</div>
+<div style="clear: both; height: 2em"></div>
+<div class="div-table mnv-simulator-table transaction-detail" style="width: 100%" >    
+    <div class="div-table-row col-header-row hide-on-mobile" > 
+        <div class="div-table-col-5 col-header hide-on-mobile" style="text-align:right; width: 4em " >#</div>
+        <div class="div-table-col-5 col-header hide-on-sm-mobile" style="text-align:center; width:8em ">{{ LANG.image }}</div> 
+        <div class="div-table-col-5 col-header" style="text-align:left;" >{{ LANG.itemName }}</div> 
+        <div class="div-table-col-5 col-header" style="text-align:right; width:5.5em " >{{ LANG.qty }}</div>
+        <div class="div-table-col-5 col-header" style="text-align:right; width:8em " >{{ LANG.price }}</div>
+        <div class="div-table-col-5 col-header" style="text-align:right; width:9em ">{{ LANG.subtotal }}</div>
+        <div class="div-table-col-5 col-header hide-on-sm-mobile" style="text-align:right; width:5em" ></div> 
+    </div>  
+    
+     {% for item in cartList %}
+        <div class="div-table-row odd-style-adjustment transaction-detail-row" >
+            <div class="div-table-col-5 row-number hide-on-mobile" style="text-align: right;">{{ loop.index }}.</div>  
+            <div class="div-table-col-5 img-col hide-on-sm-mobile" style=" width:8em; text-align: center;"><div class="image-panel" style="background-image: url('/phpthumb/phpThumb.php?src=/../_upload/{{ DOMAIN_NAME }}/item/{{ item.pkey }}/{{ item.image[0]['file'] }}&w=200&h=200&hash={{ item.image[0]['phpThumbHash'] }}')"></div></div>  
+            <div class="div-table-col-5 mnv-item-name name-col">
+                {{ item.inputItemName|raw }}{{ item.inputHidItemKey|raw }}
+                <div class="price-on-mobile">
+                    <div class="mnv-input-qty"><b>{{ LANG.qty}}</b><br>{{ item.inputQtyMobile|raw }} </div> 
+                    <div class="mnv-input-price" ><b>{{ LANG.price}}</b><br>{{ item.inputPriceInUnitMobile|raw }}</div>  
+                    <div class="mnv-input-subtotal"><b>{{ LANG.subtotal}}</b><br>{{ item.inputSubtotalMobile|raw }}</div>  
+                </div>
+                <div class="action-on-mobile">
+                   <div class="mobile-remove-button">{{ LANG.delete }}</div>
+                   <a href="/products" target="_blank"><div class="mobile-add-button">{{ LANG.add }}</div></a>
+                   <div style="clear: both; height: 0.5em"></div>    
+                </div>
+            </div>
+            <div class="div-table-col-5 mnv-input-qty hide-on-mobile">{{ item.inputQty|raw }}</div> 
+            <div class="div-table-col-5 mnv-input-price hide-on-mobile" >{{ item.inputPriceInUnit|raw }}</div>  
+            <div class="div-table-col-5 mnv-input-subtotal hide-on-mobile" >{{ item.inputSubtotal|raw }}</div> 
+            <div class="div-table-col-5 mnv-action-col hide-on-sm-mobile" style="text-align: center;  width:5em">
+                <div class="mnv-panel-action">
+                   <div class="mnv-add-col"><a href="/products" target="_blank">{{ btnAddRows|raw }}</a></div>
+                   <div class="mnv-delete-col"> {{ btnDeleteRows|raw }}</div>
+                </div>
+             </div> 
+        </div>   
+     {% endfor %}
+    
+     <div class="div-table-row odd-style-adjustment detail-row-template row-template" style="display: none;">
+        <div class="div-table-col-5  row-number hide-on-mobile" style="text-align: right;"></div>  
+        <div class="div-table-col-5  img-col hide-on-sm-mobile" style="text-align: center;"><div class="image-panel"></div></div>  
+        <div class="div-table-col-5 mnv-item-name name-col">
+            {{ inputItemName|raw }}{{ inputHidItemKey|raw }}
+             <div class="price-on-mobile">
+                <div class="mnv-input-qty"><b>{{ LANG.qty}}</b><br>{{ inputQtyMobile|raw }} </div> 
+                <div class="mnv-input-price" ><b>{{ LANG.price}}</b><br>{{ inputPriceInUnitMobile|raw }}</div>  
+                <div class="mnv-input-subtotal"><b>{{ LANG.subtotal}}</b><br>{{ inputSubtotalMobile|raw }}</div>  
+            </div>
+            <div class="action-on-mobile">
+               <div class="mobile-remove-button">{{ LANG.delete }}</div>
+               <a href="/products" target="_blank"><div class="mobile-add-button">{{ LANG.add }}</div></a>
+               <div style="clear: both; height: 0.5em"></div>    
+            </div>
+         </div> 
+        <div class="div-table-col-5 mnv-input-qty hide-on-mobile"> <div class="mnv-input-qty">{{ inputQty|raw }}</div> </div> 
+        <div class="div-table-col-5 mnv-input-price hide-on-mobile" >{{ inputPriceInUnit|raw }}</div>  
+        <div class="div-table-col-5 mnv-input-subtotal hide-on-mobile" style="text-align:right;">{{ inputSubtotal|raw }}</div> 
+         <div class="div-table-col-5 mnv-action-col hide-on-sm-mobile" style="text-align: center">
+            <div class="mnv-panel-action">
+               <div class="mnv-add-col"><a href="/products" target="_blank">{{ btnAddRows|raw }}</a></div>
+               <div class="mnv-delete-col"> {{ btnDeleteRows|raw }}</div>
+            </div>
+         </div> 
+    </div>  
+      
+       <div class="div-table-row amount-row no-odd-even-style  hide-on-mobile">
+            <div class="div-table-col-5 hide-on-mobile" ></div>  
+            <div class="div-table-col-5" ></div>  
+            <div class="div-table-col-5 "></div> 
+            <div class="div-table-col-5"></div> 
+            <div class="div-table-col-5 "></div>  
+            <div class="div-table-col-5" >{{ inputTotal|raw }}</div> 
+            <div class="div-table-col-5"></div>  
+        </div>
+</div>   
+<div class="mobile-subtotal">
+    <div class="flex">
+        <div><b>{{ LANG.total }}</b></div>
+        <div>{{ inputTotal|raw }}</div>
+    </div>  
+</div>
+<div style="clear: both; height: 2em"></div>    
+<div style="text-align:right;"></div>
+<div style="text-align:center;margin-top:2em">{{ btnSubmit|raw }}</div> 
+<div  style="text-align:center;margin-top:2em"></div>   
+
+
+    
+</div>
+    
+</form>
+{% endif %}
+</div> 
+
+<div style="clear: both; height: 5em"></div>       
+{% endblock %}

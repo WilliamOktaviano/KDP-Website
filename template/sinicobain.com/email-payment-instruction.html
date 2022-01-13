@@ -1,0 +1,12 @@
+{% extends "email-template.html" %} 
+{% block content %}
+Hi {{ CUSTOMER_NAME|raw }},
+<br>
+Terima kasih telah melakukan transaksi di situs kami.
+<br><br> 
+Untuk melakukan pembayaram silahkan klik link panduan dibawah ini<br>
+<a href="{{ INVOICE_URL }}" target="_blank">{{ INVOICE_URL|raw }}</a>
+<br><br> 
+Salam,<br>
+{{ COMPANY_NAME|raw }}
+{% endblock %}

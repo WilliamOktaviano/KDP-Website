@@ -1,0 +1,71 @@
+{% extends "template.html" %}
+{% block pagetitle %}{{ LANG.point }} | {{ parent() }}{% endblock %}
+{% block JS %}
+<script type="text/javascript" src="{{ TEMPLATE_JS_PAGE_PATH }}voucher.min.js"></script>
+<script type="text/javascript">
+jQuery(document).ready(function(){  
+ var voucher = new Voucher();
+ voucher.loadOnReady();   
+ {{ JSScript|raw }} 
+})
+</script>
+{% endblock %}
+{% block content %}
+{% set bannerIndex = banner['point'][0] %}
+<div class="banner banner-content" style="background-image:url('/phpthumb/phpThumb.php?src={{ PHPTHUMB_URL_SRC }}banner/{{ bannerIndex.pkey }}/{{ bannerIndex.file }}&f=png&hash={{ bannerIndex.phpThumbHash }}')">
+<div class="content-wrapper">
+<div class="div-table banner-text-panel">
+    <div class="div-table-row">
+        <div class="div-table-col" style="vertical-align: middle; height: 100%">
+            <div class="simple-parallax fade-up">{{ bannerIndex.trdesc|raw }}</div>
+        </div>
+    </div>
+</div>
+</div>    
+</div>  
+<div class="content-wrapper"> 
+	<div class="div-table profile-submenu" style="width:100%">
+		<div class="div-table-row">
+			<div class="div-table-col side-menu">
+				{{ macro.buildProfileSubmenu(_context) }}
+			</div>
+			<div class="div-table-col">
+			<div class="information-panel">
+				<div class="label">{{ LANG.eligiblePoint }} : <b>{{ eligiblePoint|number_format }} {{ LANG.point }}</b></div>
+				{% if canUsePoint == 1 and membershipLevel >= 2  %}
+					<div style="clear: both; height:2em"></div>
+					<div class="claim-panel flex"> 
+					<div class="voucher"><a href="/voucher-trade-point">{{ LANG.claimVoucher }}</a></div>  
+					</div>
+					<div style="clear: both; height: 1em"></div> 
+				{% else %} 
+					<div class="label-02 text-red-cardinal">Anda harus memiliki minimal <b>{{ minimumPoint }} poin</b> dan <b>premium membership</b> untuk dapat menggunakan poin Anda.</div>
+					{{ macro.pointBar(_context) }}
+				{% endif %} 
+			</div> 
+			<div style="clear: both; height: 3em"></div> 
+			<h2>{{ LANG.yourVoucher }}</h2>
+			{% if not rsActiveVoucher is empty %}  
+				<div class="voucher-card">
+				{% for data in rsActiveVoucher %}
+					<div class="voucher-item" rel-voucherkey="{{ data.voucherkey }}" > 
+						<div class="title">{{ data.voucherlabel }}</div>
+						<div class="code">{{ data.code }}</div> 
+						<div class="short-desc">{{ data.vouchershortdesc|replace({"\n":"<br>"})|raw }}</div>    
+						<div class="exp-date">{{ LANG.expDate }}: {{ data.expdate|date('d / m / Y') }} </div>
+					</div> 
+				{% endfor %}
+				</div>
+			{% else %}
+				<div style="text-align: center">{{ LANG.noDataFound }}</div>
+			{% endif %} 
+
+			{% set path = 'point-history/' %} 
+			{{ macro.buildPageList(_context,path) }}
+			</div>
+		</div>
+	</div> 
+</div>
+
+<div style="clear: both; height: 5em"></div>    
+{% endblock %}

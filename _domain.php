@@ -1,0 +1,1 @@
+<?php  $DOMAIN_NAME = 'sinicobain.com'; ?>

@@ -1,0 +1,32 @@
+{% extends "template.html" %}
+{% block pagetitle %}{{ LANG.jobOpportunities }} | {{ parent() }}{% endblock %}
+{% block content %}
+{% set bannerIndex = banner['payment'][0] %}
+<div class="banner banner-content" style="background-image:url('/phpthumb/phpThumb.php?src={{ PHPTHUMB_URL_SRC }}banner/{{ bannerIndex.pkey }}/{{ bannerIndex.file }}&f=png&hash={{ bannerIndex.phpThumbHash }}')">
+<div class="content-wrapper">
+<div class="div-table banner-text-panel">
+    <div class="div-table-row">
+        <div class="div-table-col" style="vertical-align: middle; height: 100%">
+            <div class="simple-parallax fade-up">{{ bannerIndex.trdesc|raw }}</div>
+        </div>
+    </div>
+</div>
+</div>    
+</div>  
+<div class="content-wrapper">      
+    <ul class="career-category-list" style="padding: 2em 0">
+    {% for data in rsCategoryCareer %}
+        <li>
+            <div class="content-panel auto-height">
+            <div class="image-panel" alt="{{ data.name }}" style="background-image:url('/phpthumb/phpThumb.php?src={{ PHPTHUMB_URL_SRC }}category/{{ data.pkey }}/{{ data.file }}&hash={{ data.phpThumbHash }}')"></div>
+            <div class="information">
+            <div class="career-name">{{ data.name|raw }}</div>
+            <div class="career-desc">{{ data.shortdescription|raw }}</div>
+            </div>
+            </div>
+        </li>
+    {% endfor %}  
+    </ul>
+</div>
+<div style="clear: both; height: 5em"></div>    
+{% endblock %}

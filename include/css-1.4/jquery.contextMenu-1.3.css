@@ -1,0 +1,154 @@
+/*!
+ * jQuery contextMenu - Plugin for simple contextMenu handling
+ *
+ * Version: 1.6.6
+ *
+ * Authors: Rodney Rehm, Addy Osmani (patches for FF)
+ * Web: http://medialize.github.com/jQuery-contextMenu/
+ *
+ * Licensed under
+ *   MIT License http://www.opensource.org/licenses/mit-license
+ *   GPL v3 http://opensource.org/licenses/GPL-3.0
+ */
+
+.context-menu-list {
+    margin:0; 
+    padding:5px;
+    border-radius: 0.4em;
+    min-width: 200px;
+    max-width: 250px;
+    display: inline-block;
+    position: absolute;
+    list-style-type: none;
+    
+    border: 1px solid #DDD;
+    background: #FFF;
+    
+/*    -webkit-box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+       -moz-box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+        -ms-box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+         -o-box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);*/
+    
+    font-family: Verdana, Arial, Helvetica, sans-serif;
+    font-size: 11px; 
+}
+
+.context-menu-item {
+    padding: 4px 8px;
+    border-radius: 0.3em;
+    background-color: #FFF;
+    position: relative;
+    -webkit-user-select: none;
+       -moz-user-select: -moz-none;
+        -ms-user-select: none;
+            user-select: none;
+}
+
+.context-menu-separator {
+    padding: 0;
+    margin: 5px 0;
+    border-bottom: 1px solid #DDD;
+}
+
+.context-menu-item > label > input,
+.context-menu-item > label > textarea {
+    -webkit-user-select: text;
+       -moz-user-select: text;
+        -ms-user-select: text;
+            user-select: text;
+}
+
+.context-menu-item.hover {
+    cursor: pointer;
+    background-color: #eee;
+}
+
+.context-menu-item.disabled {
+    color: #666;
+}
+
+.context-menu-input.hover,
+.context-menu-item.disabled.hover {
+    cursor: default;
+    background-color: #eee;
+}
+
+.context-menu-submenu:after {
+    font-family: 'Font Awesome 5 Pro';
+    content: "\f0da";  
+    font-weight: 900;
+	margin-top:0.2em; 
+    color: #666;
+    position: absolute;
+    top: 2px;
+    right: 5px;
+    z-index: 1;
+}
+
+/* icons
+    #protip:
+    In case you want to use sprites for icons (which I would suggest you do) have a look at
+    http://css-tricks.com/13224-pseudo-spriting/ to get an idea of how to implement 
+    .context-menu-item.icon:before {}
+ */
+.context-menu-item.icon {min-height: 18px; min-width: 150px;} 
+.context-menu-item.icon-empty  {padding-left: 20px} 
+.context-menu-item.icon-selectall::before { font-family: "Font Awesome 5 Pro";  font-size: 1.2em;   font-weight: 900; padding: 4px 8px 4px 4px; content: "\f247";  color: #37a46c}
+.context-menu-item.icon-deselectall::before { font-family: "Font Awesome 5 Pro"; font-size: 1.2em;  font-weight: 900; padding: 4px 8px 4px 4px; font-style: regular; content: "\f247"; color: #7FCA9F  }
+.context-menu-item.icon-showdetail::before { font-family: "Font Awesome 5 Pro";  font-size: 1.2em;  font-weight: 900; padding: 4px 8px 4px 4px; font-style: regular; content: "\f2d0";  color: #4682b4; }
+.context-menu-item.icon-hidedetail::before { font-family: "Font Awesome 5 Pro";  font-size: 1.2em;  font-weight: 900; padding: 4px 8px 4px 4px; font-style: regular; content: "\f2d0";  color: #85C1F5; }
+.context-menu-item.icon-edit::before { font-family: "Font Awesome 5 Pro";   font-size: 1.2em; font-weight: 900; padding: 4px 8px 4px 4px; content: "\f044";}
+.context-menu-item.icon-delete::before { font-family: "Font Awesome 5 Pro";  font-size: 1.2em;  font-weight: 900; padding: 4px 8px 4px 4px; content: "\f00d"; color: #C41E3A; }
+.context-menu-item.icon-changestatus::before { font-family: "Font Awesome 5 Pro";  font-size: 1.2em;  font-weight: 900; padding: 4px 8px 4px 4px; content: "\f058"; color: #0093AF }
+.context-menu-item.icon-tag::before { font-family: "Font Awesome 5 Pro";  font-size: 1.2em;  font-weight: 900; padding: 4px 8px 4px 4px; content: "\f02b";  color: #F58025 }
+.context-menu-item.icon-duplicate::before { font-family: "Font Awesome 5 Pro";   font-size: 1.2em; font-weight: 900; padding: 4px 8px 4px 4px; content: "\f0c5"; color: #8C489F  }
+.context-menu-item.icon-print::before { font-family: "Font Awesome 5 Pro";  font-size: 1.2em;  font-weight: 900; padding: 4px 8px 4px 4px; content: "\f02f";  }
+.context-menu-item.icon-run::before { font-family: "Font Awesome 5 Pro";  font-size: 1.2em;  font-weight: 900; padding: 4px 8px 4px 4px; content: "\f04b"; color: #568203  }
+.context-menu-item.icon-requestPickup::before { font-family: "Font Awesome 5 Pro";  font-size: 1.2em;  font-weight: 900; padding: 4px 8px 4px 4px; content: "\f0d1"; color: #0093AF  }
+.context-menu-item.icon-resync::before { font-family: "Font Awesome 5 Pro";  font-size: 1.2em;  font-weight: 900; padding: 4px 8px 4px 4px; content: "\f021"; color: #37a46c  }
+ 
+/* vertically align inside labels */
+.context-menu-input > label > * { vertical-align: top; }
+
+/* position checkboxes and radios as icons */
+.context-menu-input > label > input[type="checkbox"],
+.context-menu-input > label > input[type="radio"] {
+    margin-left: -17px;
+}
+.context-menu-input > label > span {
+    margin-left: 5px;
+}
+
+.context-menu-input > label,
+.context-menu-input > label > input[type="text"],
+.context-menu-input > label > textarea,
+.context-menu-input > label > select {
+    display: block;
+    width: 100%;
+    
+    -webkit-box-sizing: border-box;
+       -moz-box-sizing: border-box;
+        -ms-box-sizing: border-box;
+         -o-box-sizing: border-box;
+            box-sizing: border-box;
+}
+
+.context-menu-input > label > textarea {
+    height: 100px;
+}
+
+.context-menu-item > .context-menu-list {
+    display: none;
+    /* re-positioned by js */
+    right: -5px;
+    top: 5px;
+}
+
+.context-menu-item.hover > .context-menu-list {
+    display: block;
+}
+
+.context-menu-accesskey {
+    text-decoration: underline;
+}

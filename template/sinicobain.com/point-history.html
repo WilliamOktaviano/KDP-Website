@@ -1,0 +1,80 @@
+{% extends "template.html" %}
+{% block pagetitle %}{{ LANG.point }} | {{ parent() }}{% endblock %}
+{% block content %}
+{% set bannerIndex = banner['point'][0] %}
+<div class="banner banner-content" style="background-image:url('/phpthumb/phpThumb.php?src={{ PHPTHUMB_URL_SRC }}banner/{{ bannerIndex.pkey }}/{{ bannerIndex.file }}&f=png&hash={{ bannerIndex.phpThumbHash }}')">
+<div class="content-wrapper">
+<div class="div-table banner-text-panel">
+    <div class="div-table-row">
+        <div class="div-table-col" style="vertical-align: middle; height: 100%">
+            <div class="simple-parallax fade-up">{{ bannerIndex.trdesc|raw }}</div>
+        </div>
+    </div>
+</div>
+</div>    
+</div>  
+<div class="content-wrapper"> 
+	<div class="div-table profile-submenu" style="width:100%">
+		<div class="div-table-row">
+			<div class="div-table-col side-menu">
+				{{ macro.buildProfileSubmenu(_context) }}
+			</div>
+			<div class="div-table-col">
+			<div class="information-panel">
+				<div class="label">{{ LANG.eligiblePoint }} : <b>{{ eligiblePoint|number_format }} {{ LANG.point }}</b></div>
+				{% if not (canUsePoint == 1 and membershipLevel >= 2)  %}
+					<div class="label-02 text-red-cardinal">Anda harus memiliki minimal <b>{{ minimumPoint }} poin</b> dan <b>premium membership</b> untuk dapat menggunakan poin Anda.</div>
+				 	{{ macro.pointBar(_context) }}
+				{% else %}
+					<div style="clear: both; height:2em"></div>
+					<div class="claim-panel flex">
+						<div class="voucher"><a href="/voucher-trade-point">{{ LANG.claimVoucher }}</a></div>
+						<!--<div class="cashback"><a href="/point-cashback">{{ LANG.claimCashback }}</a></div>-->
+					</div>
+					<div style="clear: both; height: 1em"></div> 
+				{% endif %} 
+			</div> 
+			<div style="clear: both; height: 1em"></div> 
+			{% if not rsPoint is empty %}  
+				<div class="point-history-desktop">
+					<div class="div-table transaction-history-table basic-table-01" style="width: 100%; ">
+					 <div class="div-table-row col-header" style="font-weight: bold;">
+						<div class="div-table-col-3 row-number  align-right" style="right; width: 3em">#</div> 
+						<div class="div-table-col-3 align-center" style="width: 8em;">{{ LANG.point }}</div> 
+						<div class="div-table-col-3 align-center" style="width: 8em;">{{ LANG.expiredDate }}</div>  
+						<div class="div-table-col-3">{{ LANG.description }}</div>
+					</div>
+					{% for data in rsPoint %}
+						<div class="div-table-row">
+							<div class="div-table-col-3  row-number align-right">{{ loop.index }}. </div> 
+							<div class="total div-table-col-3  align-center">{{ data.point|number_format }}</div>  
+							<div class="div-table-col-3  align-center table-col-mode">{{ data.expdate|date('d / m / Y') }} </div>
+							<div class="total div-table-col-3">{{ data.trdesc|raw }} </div>   
+						</div>
+					{% endfor %}
+					</div>  
+				</div>	 
+				<div class="point-history-mobile">
+					<ul> 
+					{% for data in rsPoint %}
+						<li> 
+							<div class="point">{{ data.point|number_format }} {{ LANG.point }}</div>
+							<div class="exp-date">{{ LANG.expiredDate }} : {{ data.expdate|date('d / m / Y') }}</div> 
+							<div class="desc">{{ data.trdesc|raw }}</div> 
+						</li>
+					{% endfor %}
+					</ul>  
+				</div>
+			{% else %}
+				<div style="text-align: center">{{ LANG.noDataFound }}</div>
+			{% endif %} 
+
+			{% set path = 'point-history/' %} 
+			{{ macro.buildPageList(_context,path) }}
+			</div>
+		</div>
+	</div> 
+</div>
+
+<div style="clear: both; height: 5em"></div>    
+{% endblock %}

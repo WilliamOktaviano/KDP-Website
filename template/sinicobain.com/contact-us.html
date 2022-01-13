@@ -1,0 +1,138 @@
+{% extends "template.html" %}
+{% block pagetitle %}{{ LANG.contactUs}} | {{ parent() }}{% endblock %}
+{% block JS %} 
+<script type="text/javascript" src="{{ TEMPLATE_JS_PAGE_PATH }}contact-us.min.js"></script>
+<script type="text/javascript">
+jQuery(document).ready(function(){  
+ var opt = new Array();    
+ var errMsg = new Array();  
+     var lang = new Array();     
+
+ errMsg['name'] = {{ ERRORMSG.name|json_encode()|raw }}; 
+ errMsg['phone'] = {{ ERRORMSG.phone|json_encode()|raw }}; 
+ errMsg['email'] = {{ ERRORMSG.email|json_encode()|raw }}; 
+ errMsg['subject'] = {{ ERRORMSG.subject|json_encode()|raw }}; 
+ errMsg['message'] = {{ ERRORMSG.message|json_encode()|raw }}; 
+ lang['contactUsSuccessful'] = "{{ LANG.contactUsSuccessful|raw }}";
+
+ opt['errMsg'] = errMsg;
+ opt['lang'] = lang;
+
+ var contactUs = new ContactUs(opt);
+ contactUs.loadOnReady(); 
+})
+</script>
+<script  type="text/javascript"  src='https://www.google.com/recaptcha/api.js'></script>
+{% endblock %}
+{% block content %} 
+<div style="clear:both;height:4em"></div>
+
+ <div class="contact-us-table div-table">
+     <div class="div-table-row"> 
+          <div class="div-table-col-5">
+            <form id="form-contactus" method="post"  class="form-horizontal form-default prevent-form-submit" action="/ajax-contact-us.php">  
+                <div class="notification-msg"></div>  
+                <div class="form-group">
+                    <label class="col-lg-3 control-label" >{{ LANG.name }}</label>
+                    <div class="col-lg-9">
+                      {{ inputName|raw }}
+                    </div>
+                </div>
+
+                 <div class="form-group">
+                    <label class="col-lg-3 control-label">{{ LANG.email }}</label>
+                    <div class="col-lg-9">
+                      {{ inputEmail|raw }}
+                    </div>
+                </div>
+
+                 <div class="form-group">
+                    <label class="col-lg-3 control-label">{{ LANG.phone }}</label>
+                    <div class="col-lg-9">
+                      {{ inputPhone|raw }}
+                    </div>
+                </div>
+
+                 <div class="form-group">
+                    <label class="col-lg-3 control-label">{{ LANG.subject }}</label>
+                    <div class="col-lg-9">
+                      {{ inputSubject|raw }}
+                    </div>
+                </div>
+
+                 <div class="form-group">
+                    <label class="col-lg-3 control-label">{{ LANG.message }}</label>
+                    <div class="col-lg-9">
+                      {{ inputMessage|raw }}
+                    </div>
+                </div>
+ 
+                <div style="clear: both; height: 1em"></div>
+                <div style="text-align: center">
+                    <div class="g-recaptcha" data-sitekey="{{ settings.reCaptchaSiteKey }}"></div>
+                    <div style="clear: both; height: 1em"></div>
+                    <div>{{ btnSubmit|raw }}</div>
+                </div>
+            </form>  
+          </div>
+         <div class="div-table-col-5" style="width:3em"></div>
+          <div class="div-table-col-5  contact-us-company-address">
+            <div class="h1">{{ settings.companyName }}</div>
+            <div>{{ settings.companyAddress|raw }}</div>
+              
+            <div class="div-table contact-channel" style="margin-top:1em;">
+             {% for item in settings.companyPhone %}   
+                <div class="div-table-row"> 
+                    <div class="div-table-col-5" style="width:2.5em;"><i class="fa fa-phone"></i></div> 
+                    <div class="div-table-col-5"><a href="tel:{{ item.value }}">{{ item.value }}</a></div>
+                </div>
+              {% endfor %} 
+              {% for item in settings.companyEmail %}   
+                <div class="div-table-row"> 
+                    <div class="div-table-col-5"  style="width:2.5em;"><i class="fa fa-envelope"></i></div> 
+                    <div class="div-table-col-5"><a href="mailto:{{ item.value }}">{{ item.value }}</a></div>
+                </div>
+              {% endfor %}  
+              {% for item in settings.companyMessenger %}   
+                <div class="div-table-row">  
+                    <div class="div-table-col-5"  style="width:2.5em;">  
+                        {% set HREF = '' %}
+                        {% set FA_ICON = '' %}
+                        {% if item.label|lower == "wa" or item.label|lower == "whatsapp" %}  
+                            {% set FA_ICON = "fab fa-whatsapp" %} 
+                            {% set HREF = "https://api.whatsapp.com/send?phone=" ~ item.value|wafilter %}
+                        {% endif %}  
+                        <i class="{{ FA_ICON }}"></i>
+                    </div> 
+        			<div class="div-table-col-5">{% if not HREF is empty %}<a href="{{ HREF }}">{% endif %}{{ item.value }}{% if not HREF is empty %}</a>{% endif %}</div>
+                </div>
+              {% endfor %}    
+           </div>   
+              
+              
+           <div class="medsos-panel" style="float:left">
+                {% if not settings.companyMedsos is empty %} <div style="margin: 2em 0 0.5em 0">Anda juga dapat mengikuti kami di</div> {% endif %}
+                <ul>   
+                 {% for item in settings.companyMedsos %} 
+                    {% if item.label|lower == "fb" or item.label|lower == "facebook" %}  
+                        {% set FA_ICON = "fab fa-facebook-square" %}
+                    {% elseif item.label|lower == "instagram" %}  
+                        {% set FA_ICON = "fab fa-instagram" %}
+                    {% elseif item.label|lower == "twitter" %}  
+                        {% set FA_ICON = "fab fa-twitter" %}
+                    {% elseif item.label|lower == "youtube" %}  
+                        {% set FA_ICON = "fab fa-youtube" %}
+                    {% endif %}  
+                    <a href="{{ item.value }}" target="_blank"><li class="{{ FA_ICON }}"></li></a>
+                  {% endfor %}  
+                    <div style="clear:both"></div>
+                </ul>   
+            </div> 
+               
+          </div> 
+        
+     </div>
+     <div style="clear:both;height:2em"></div>
+
+ </div>	  
+{% endblock %}

@@ -1,0 +1,65 @@
+{% extends "template.html" %}
+{% block pagetitle %}{{ LANG.login }} | {{ parent() }}{% endblock %}
+{% block JS %}
+<script type="text/javascript" src="{{ TEMPLATE_JS_PAGE_PATH }}login.min.js"></script>
+<script type="text/javascript">
+jQuery(document).ready(function(){  
+ var opt = new Array();    
+ var errMsg = new Array();     
+ errMsg['username'] = {{ ERRORMSG.username|json_encode()|raw }}; 
+ errMsg['password'] = {{ ERRORMSG.password|json_encode()|raw }}; 
+ opt['errMsg'] = errMsg;
+    
+ var login = new Login(opt);
+ login.loadOnReady(); 
+})
+</script>
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+{% endblock %}
+
+{% block content %}
+{% set bannerIndex = banner[PAGE_ID][0] %}
+<div class="banner banner-content" style="background-image:url('/phpthumb/phpThumb.php?src={{ PHPTHUMB_URL_SRC }}banner/{{ bannerIndex.pkey }}/{{ bannerIndex.file }}&f=png&hash={{ bannerIndex.phpThumbHash }}')">
+<div class="content-wrapper">
+<div class="div-table banner-text-panel">
+    <div class="div-table-row">
+        <div class="div-table-col" style="vertical-align: middle; height: 100%">
+            <div class="simple-parallax fade-up">{{ bannerIndex.trdesc|raw }}</div>
+        </div>
+    </div>
+</div>
+</div>    
+</div> 
+
+<div class="content-wrapper"> 
+<form id="form-login" method="post" class="form-horizontal form-default prevent-form-submit" action="/ajax-member.php">
+{{ inputHidAction|raw }}
+<div class="notification-msg"></div> 
+<div class="form-group">
+<label class="col-lg-4 control-label">{{ LANG.username|upper }}</label>
+<div class="col-lg-8">
+{{ inputUserName|raw }}
+</div>
+</div>
+<div class="form-group">
+<label class="col-lg-4 control-label">{{ LANG.password|upper }}</label>
+<div class="col-lg-8">
+{{ inputPassword|raw }}
+</div>
+</div>
+<div class="form-group">
+<label class="col-lg-4"></label>
+<div class="col-lg-8">
+{{ LANG.forgotPassword }} ? <span rel=""><a href="/forgot-password">{{ LANG.clickHere }}</a></span>.
+</div>
+</div>
+<div class="form-group">
+<label class="col-lg-4 control-label"></label>
+<div class="col-lg-8">
+{{ btnSubmit|raw }}
+</div>
+</div>
+</form>
+<div style="clear: both; height: 2em"></div>
+</div>
+{% endblock %}

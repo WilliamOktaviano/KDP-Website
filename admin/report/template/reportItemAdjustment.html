@@ -1,0 +1,48 @@
+{% extends "template.html" %} 
+{% block JS %}
+
+<script type="text/javascript">
+
+	jQuery(document).ready(function(){  
+   
+        // setAutoComplete('filterForm', {objName:'itemName', objValue :'hidItemKey', url : 'ajax-item.php?action=searchData&itemtype=1' });
+ 
+          $( "[name=trStartDate], [name=trEndDate]" ).change(function() { 
+            var trStartDate = Date.parse(convertDateToStandartFormat($("[name=trStartDate]").val()));
+            var trEndDate = Date.parse(convertDateToStandartFormat($("[name=trEndDate]").val()));
+               
+            if (trStartDate > trEndDate) 
+                $("[name=trEndDate]").val($("[name=trStartDate]").val()); 
+            
+		});
+	});
+
+</script>
+{% endblock %}
+{% block filter %} 
+ <div> 
+    <div class="form-group">
+        <label class="col-xs-12 control-label" >Kode</label>
+        <div class="col-xs-12"> {{ inputCode|raw }} </div>
+    </div>
+     
+    <div class="form-group">
+        <label class="col-xs-12 control-label" >Periode</label>
+        <div class="col-xs-6" style="padding-right:5px;"> {{ inputStartDate|raw }} </div>
+        <div class="col-xs-6" style="padding-left:5px;"> {{ inputEndDate|raw }} </div>
+    </div> 
+    <div class="form-group">
+        <label class="col-xs-12 control-label" >Item</label>
+        <div class="col-xs-12"> {{ inputItemName|raw }} </div> 
+    </div>  
+    <div class="form-group">
+        <label class="col-xs-12 control-label" >Gudang</label>
+        <div class="col-xs-12"> {{ inputSelWarehouse|raw }} </div> 
+    </div>  
+    <div class="form-group">
+        <label class="col-xs-12 control-label" >Status</label>
+        <div class="col-xs-12"> {{ inputSelStatus|raw }} </div> 
+    </div> 
+    
+ </div>	 
+{% endblock %} 

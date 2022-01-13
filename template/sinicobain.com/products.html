@@ -1,0 +1,107 @@
+{% extends "template.html" %}  
+{% block pagetitle %}{% if not categoryPath is empty %} {{ categoryPath[0].name|raw }} {% else %} {{ LANG.allProducts }} {% endif %} | {{ parent() }}{% endblock %} 
+ 
+{% set categoryKey = 0 %} 
+{% if not categoryPath is empty %}
+    {% set categoryName = categoryPath[0].name %}
+    {% set categoryKey = categoryPath[0].pkey %}
+{% endif %}
+
+{% block JS %} 
+<script type="text/javascript" src="{{ TEMPLATE_JS_PAGE_PATH }}products.min.js"></script>
+<script type="text/javascript">
+jQuery(document).ready(function(){  
+ var opt = new Array();      
+ opt['selectedCategoryKey'] = {{ categoryKey }};
+ opt['selectedCategoryName'] = "{{ categoryName|urlfilter }}";
+ var products = new Products(opt);
+ products.loadOnReady(); 
+})
+</script>
+<!--<script src='https://www.google.com/recaptcha/api.js'></script>-->
+{% endblock %} 
+
+{% block content %} 
+{% set bannerIndex = banner['products'][0] %}
+<div class="banner banner-content" style="background-image:url('/phpthumb/phpThumb.php?src={{ PHPTHUMB_URL_SRC }}banner/{{ bannerIndex.pkey }}/{{ bannerIndex.file }}&f=png&hash={{ bannerIndex.phpThumbHash }}')">
+<div class="content-wrapper">
+<div class="div-table banner-text-panel">
+    <div class="div-table-row">
+        <div class="div-table-col" style="vertical-align: middle; height: 100%">
+            <div class="simple-parallax fade-up">{{ bannerIndex.trdesc|raw }}</div>
+        </div>
+    </div>
+</div>
+</div>    
+</div>  
+<div class="content-wrapper">      
+<div class="product-icon-filter"><i class="fas fa-filter"></i></div>    
+<div style="clear: both"></div>
+<div class="product-page div-table">
+    <div class="div-table-row">
+        <div class="filter-col div-table-col">
+            <div class="filter-box">
+                <div class="title">{{ LANG.sort }}</div>
+                <div class="option">
+                   <div class="flex">
+                     <div class="consume">{{ selOrderBy|raw }}</div>
+                     <div>{{ selOrderType|raw }}</div>
+                   </div>
+                </div>
+            </div>
+            <div class="filter-box">
+                <div class="title">{{ LANG.filter }}<div class="user-select-none reset-btn">{{ LANG.reset }}</div></div>
+                <div class="filter-item">
+                    <div class="filter-name">{{ LANG.price }}</div>
+                    <div class="flex">
+                        <div>{{ inputPriceFrom|raw }}</div>    
+                        <div>-</div>
+                        <div>{{ inputPriceTo|raw }}</div>    
+                    </div>
+                </div> 
+                <div class="filter-item">
+                    <div>{{ LANG.category }}</div>
+                    <div class="div-table" style="margin-top: 1em">
+                        {% for itemCategory in rsItemCategory %} 
+                           <div class="div-table-row">
+                               <div class="div-table-col" style="padding: 0 0.5em">{{ itemCategory.input|raw }}</div>
+                               <div class="div-table-col">{{ itemCategory.name|raw }}</div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="filter-item">
+                    <div>{{ LANG.brand }}</div>
+                     <div class="div-table" style="margin-top: 1em">
+                        {% for brand in rsBrand %} 
+                           <div class="div-table-row">
+                               <div class="div-table-col" style="padding: 0 0.5em">{{ brand.input|raw }}</div>
+                               <div class="div-table-col">{{ brand.name|raw }}</div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            
+            <div class="btn-panel">{{ btnUpdateFilter|raw }}</div>
+            <div style="clear: both; height: 5em"></div>
+        </div>
+        <div class="product-col div-table-col">
+            {% if rsItem is empty %}
+            <div style="text-align:center">{{ LANG.noDataFound }}</div>
+            {% endif %} 
+            {{ macro.buildItemDataCard(_context) }} 
+            
+            {% set path = 'products/' %}
+            {% if not categoryKey is empty and categoryKey != 0 %}
+            {% set path = path ~ '/' ~ categoryName|urlfilter ~ '/cat=' ~ categoryKey  %}
+            {% endif %} 
+            
+            {{ macro.buildPageList(_context,path) }}
+            
+<!--            {{ macro.buildProductPageList(_context) }} -->
+        </div>
+    </div>
+</div>    
+</div> 
+{% endblock %}

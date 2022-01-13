@@ -1,0 +1,146 @@
+{% extends "template.html" %}
+{% set item = rsItem[0] %}   
+{% block JS %}     
+<script type="text/javascript" src="{{ TEMPLATE_JS_PATH }}galleria-1.6.1.min.js"></script> 
+<script type="text/javascript" src="{{ TEMPLATE_JS_PAGE_PATH }}products-detail.min.js"></script>
+<script type="text/javascript">
+jQuery(document).ready(function(){  
+ var opt = new Array();       
+
+ var lang = new Array();
+ lang['offerSimulatorUpdated'] = '{{ LANG.offerSimulatorUpdated }}';    
+ opt.lang = lang;
+ opt['templateJSPath'] = '{{ TEMPLATE_JS_PATH }}';
+ var productsDetail = new ProductsDetail(opt);
+ productsDetail.loadOnReady();
+
+})
+</script>
+{% endblock %}
+
+{% block JSOnLoad %}
+
+
+<!-- blm tau knp harus dionload template -->
+{{ parent() }} 
+Galleria.loadTheme('{{ TEMPLATE_JS_PATH }}galleriathemes/twelve-1.6/galleria.twelve.js');  
+Galleria.run('#product-image-galleria', {
+ imageCrop: false,
+ extend: function(){
+             this.bind('image', function(e) {   
+                    jQuery(e.imageTarget).click(this.proxy(function() {
+                       this.openLightbox();
+                    }));
+                });   
+            } 
+});
+{% endblock %}
+
+ 
+{% block pagetitle %}{%if rsItem[0].name is empty %}{{ rsItem[0].code|raw }}{%else %}{{ rsItem[0].name|raw }}{% endif %} | {{ parent() }}{% endblock %}  
+
+{% block content %}  
+{% set bannerIndex = banner['products'][0] %}
+<div class="banner banner-content" style="background-image:url('/phpthumb/phpThumb.php?src={{ PHPTHUMB_URL_SRC }}banner/{{ bannerIndex.pkey }}/{{ bannerIndex.file }}&f=png&hash={{ bannerIndex.phpThumbHash }}')">
+<div class="content-wrapper">
+<div class="div-table banner-text-panel">
+    <div class="div-table-row">
+        <div class="div-table-col" style="vertical-align: middle; height: 100%">
+            <div class="simple-parallax fade-up">{{ bannerIndex.trdesc|raw }}</div>
+        </div>
+    </div>
+</div>
+</div>    
+</div>  
+<div class="content-wrapper">
+	<div class="div-table item-detail" style="width:100%;">
+        <div class="div-table-caption">
+            <div class="fb-plugin" style="padding-left:0.5em">
+             {% if not settings.FBLikeScript is empty %}
+                {{ settings.FBLikeScript|replace({'{{ PAGE_LINK }}': settings.sitesName ~ REQUEST_URI})|raw }}
+             {% endif %}     
+             </div>
+        </div>
+        
+        <div class="div-table-row item-detail-row"> 
+            <div class="div-table-col-5  item-detail-col" >
+                <div id="product-image-galleria">
+                        {% for itemImage in rsItemImage %}  
+                          <img src="/phpthumb/phpThumb.php?src={{ PHPTHUMB_URL_SRC }}item/{{ item.pkey }}/{{ itemImage.file }}&hash={{ itemImage.phpThumbHash }}">  
+                        {% endfor %} 
+                    
+                        {% for vidoeurl in rsItemVideo %}  
+                          <a href="{{ vidoeurl.url }}"><span class="video">Watch this at YouTube</span></a>
+                        {% endfor %}  
+                 </div> 
+            </div> 
+             <div class="div-table-col-5 item-detail-col">
+                  <form name="order-form" id="order-form" class="form-horizontal  prevent-form-submit" action="/ajax-cart.php" method="post">
+                    {{ inputHidItemkey|raw }}
+                    {{ inputHidAction|raw }} 
+             			
+                   <!-- {% if rsVariant|length > 0 %}
+						<ul class="item-variant">
+                          {% for variant in rsVariant %} 
+							<li  {% if variant.qtyonhand > 0 %}class="item-variant-link user-select-none"{% endif %}><div class="panel-data" relpkey="{{ variant.pkey }}" relprice="{{ variant.sellingprice|number_format }}">{{ variant.codevariant }}</div></li>                         
+                          {% endfor %}
+                        </ul>	    
+                        <div style="clear:both; height:1em;"></div>   	             
+                    {% endif %}-->
+                     
+                    <div class="item-name">{{ item.name|raw }}</div>  
+                    <div class="item-code">#{{ item.code|raw }}</div>
+                    <div class="item-short-desc">{{ item.shortdescription|raw }}</div>  
+                      
+                    <!--<div class="item-brand">{{ item.brandname|raw }}</div> -->  
+                    <div style="clear: both; height: 1em"></div>  
+                    {% if item.hasdisc %} 
+                        <div class="slash-price">Rp. {{ item.originalsellingprice|number_format }}</div>
+                        <div class="tag-disc" >{{ item.discpercentage|number_format }} %</div>  
+                        <div style="clear:both"></div> 
+                        <div class="price">Rp. {{ item.sellingprice|number_format }}</div> 
+                    {% else %}
+                        <div class="price">Rp. {{ item.sellingprice|number_format }}</div>
+                    {% endif %}
+                      
+                    <div style="clear: both; height: 1em"></div>  
+                      
+                    <div class="flex qty-col" style="padding:0">
+                        <div class="ctr-btn minus" rel-ctr="-1"><i class="fas fa-minus-square"></i></div>
+                        <div>{{ inputQty|raw }}</div> 
+                        <div class="ctr-btn plus" rel-ctr="1"><i class="fas fa-plus-square"></i></div>
+                    </div>
+                    <div style="clear:both; height:2em"></div> 
+                      
+                      <!--<div class="button-notify user-select-none" title="{{ LANG.notifyMe }}">{{ LANG.notifyMe }}</div>-->
+                      <div class="flex">
+                        <div class="consume">
+                             {% if item.qtyonhand > 0 %}{{ btnSubmit|raw }}{% else %}{{ btnSubmitDisabled|raw }}{% endif %}
+                        </div>
+                        {% if not loginName is empty %}
+                          <div class="new-offer btn btn-princeton-orange"><i class="fas fa-plus"></i> {{ LANG.newOffer }}</div>
+                        {% endif %} 
+                      </div>  
+             </form>   
+
+            </div>
+        </div> 
+    </div> 
+    
+ <div style="clear:both; height: 2em"></div> 
+  <div class="item-description"> 
+    
+    {% if rsItemDescription|length > 0 %}
+    <ul >
+         {% for itemDescription in rsItemDescription %} 
+            <li><div class="title">{{ itemDescription.label }}</div><div class="value">{{ itemDescription.value|raw }}</div></li> 
+         {% endfor %} 
+    </ul>
+    {% else %}
+    	<div>{{ LANG.noDescriptionAvailable }}</div>
+     {% endif %}
+	</div> 
+</div>
+<div style="clear:both;height:2em;"></div> 
+
+{% endblock %} 

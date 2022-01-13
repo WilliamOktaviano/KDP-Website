@@ -1,0 +1,56 @@
+{% extends "template.html" %}
+{% set item = rsItem[0] %}   
+{% block JS %}    
+<!--<script type="text/javascript" src="{{ TEMPLATE_JS_PAGE_PATH }}career-detail.min.js"></script>-->
+<script type="text/javascript">
+jQuery(document).ready(function(){  
+ var opt = new Array();       
+ opt['templateJSPath'] = '{{ TEMPLATE_JS_PATH }}';
+ var careerDetail = new CareerDetail(opt);
+careerDetail.loadOnReady(); 
+})
+</script>
+{% endblock %}
+ 
+{% block pagetitle %}{%if rsItem[0].title is empty %}{{ rsItem[0].code|raw }}{%else %}{{ rsItem[0].title|raw }}{% endif %} | {{ parent() }}{% endblock %}  
+{% block content %}  
+{% set bannerIndex = banner['products'][0] %}  
+{% set url =  (not item.url is empty) ? item.url|raw : '/recruitment/' ~ item.title ~ '/'~ item.pkey %}
+<div class="banner banner-content" style="background-image:url('/phpthumb/phpThumb.php?src={{ PHPTHUMB_URL_SRC }}banner/{{ bannerIndex.pkey }}/{{ bannerIndex.file }}&f=png&hash={{ bannerIndex.phpThumbHash }}')">
+<div class="content-wrapper">
+<div class="div-table banner-text-panel">
+    <div class="div-table-row">
+        <div class="div-table-col" style="vertical-align: middle; height: 100%">
+            <div class="simple-parallax fade-up">{{ bannerIndex.trdesc|raw }}</div>
+        </div>
+    </div>
+</div>
+</div>    
+</div>  
+<div class="content-wrapper">
+    <div class="subtitle">{{ item.title|raw }}</div>
+    <div style="clear:both; height: 0.5em"></div> 
+    <div class="btn-back"><a href="/careers-list"><i class="fa fa-angle-left" style="margin-right: 0.5em"></i>{{ LANG.back|lower }} </a></div>
+    <div style="clear:both; height: 2em"></div> 
+	<div class="div-table job-information" style="width:100%;"> 
+        <div class="div-table-row"> 
+            <div class="div-table-col-5  job-detail-col" >
+                    <div class="flex"><div><i class="fas fa-map-marker-alt"></i></div><div>{{ item.citycatname|raw }}</div></div>
+                    <div style="clear:both; height: 2em"></div> 
+                    <h2>{{ LANG.jobDescription|raw }}</h2>
+                    <div>{{ item.jobdesc|raw }}</div>
+                    <div style="clear:both; height: 2em"></div> 
+                    <h2>{{ LANG.jobRequirement|raw }}</h2>
+                    <div>{{ item.requirement|raw }}</div> 
+                
+                    <div style="clear:both; height: 2em"></div> 
+                    <div class="apply"><a href="{{ url }}" target="_blank">{{ LANG.apply }}</a></div> 
+            </div>  
+        </div> 
+    </div> 
+    
+ <div style="clear:both; height: 2em"></div> 
+</div>
+<div style="clear:both;height:2em;"></div> 
+
+{% endblock %} 

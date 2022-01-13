@@ -1,0 +1,70 @@
+{% extends "template.html" %}
+{% block pagetitle %}{{ LANG.offerSimulator }} | {{ parent() }}{% endblock %}
+{% block content %}
+{% set bannerIndex = banner['payment'][0] %}
+<div class="banner banner-content" style="background-image:url('/phpthumb/phpThumb.php?src={{ PHPTHUMB_URL_SRC }}banner/{{ bannerIndex.pkey }}/{{ bannerIndex.file }}&f=png&hash={{ bannerIndex.phpThumbHash }}')">
+<div class="content-wrapper">
+<div class="div-table banner-text-panel">
+    <div class="div-table-row">
+        <div class="div-table-col" style="vertical-align: middle; height: 100%">
+            <div class="simple-parallax fade-up">{{ bannerIndex.trdesc|raw }}</div>
+        </div>
+    </div>
+</div>
+</div>    
+</div>  
+<div class="content-wrapper">   
+	
+	<div class="div-table profile-submenu" style="width:100%">
+		<div class="div-table-row">
+			<div class="div-table-col side-menu">
+				{{ macro.buildProfileSubmenu(_context) }}
+			</div>
+			<div class="div-table-col">
+					<a href="/new-simulator" style="float:right"><div class="new-offer btn btn-primary"><i class="fas fa-plus"></i> {{ LANG.newOffer }}</div></a>
+					<div style="clear:both; height: 0.5em"></div>
+					{% if not rsSimulator is empty %}  
+						<div class="simulator-history-desktop">
+							<div class="div-table transaction-history-table basic-table-01" style="width: 100%; margin-top: 1em">
+							 <div class="div-table-row col-header" style="font-weight: bold;">
+								<div class="div-table-col-3 row-number  align-right" style="right; width: 3em">#</div>
+								<div class="div-table-col-3" style="width: 10em">{{ LANG.code }}</div>
+								<div class="div-table-col-3" style="">{{ LANG.name }}</div>
+								<div class="div-table-col-3 align-right" style="width: 10em;">{{ LANG.total }}</div>
+								<div class="div-table-col-3 align-right" style="width: 5em;"></div>
+							</div>
+							{% for data in rsSimulator %}
+								<div class="div-table-row">
+									<div class="div-table-col-3 hide-mobile row-number align-right">{{ loop.index }}. </div>
+									<div class="div-table-col-3 title"><a href="/simulator/{{ data.name|urlfilter }}/{{ data.pkey }}"  target="_blank">{{ data.code }}</a></div>
+									<div class="div-table-col-3 ">{{ data.name }}</div>
+									<div class="div-table-col-3  align-right">{{ data.grandtotal|number_format }}</div> 
+									<div class="div-table-col-3 print" style="text-align: center"><a class="text-red-cardinal" href="print/simulator/{{ data.pkey }}"  target="_blank"><i class="fas fa-file-pdf"></i> {{ LANG.print }}</a></div> 
+								</div>
+							{% endfor %}
+							</div>  
+						</div>
+						<div class="simulator-history-mobile">
+							<ul> 
+								{% for data in rsSimulator %}
+									<li>  
+										<div class="header-row flex">
+											<div class="name consume"><a href="/simulator/{{ data.name|urlfilter }}/{{ data.pkey }}"  target="_blank">{{ data.name }}</a></div>
+											<div class="amount">{{ data.grandtotal|number_format }}</div> 
+										</div> 
+										<div class="title">{{ data.code }}</div> 
+										<div class="print"><a class="text-red-cardinal" href="print/simulator/{{ data.pkey }}"  target="_blank"><i class="fas fa-file-pdf"></i> {{ LANG.print }}</a></div> 
+									</li>
+								{% endfor %}
+							</ul>   
+						</div>
+					{% else %}
+					   <div style="text-align: center">{{ LANG.noDataFound }}</div>
+					{% endif %} 
+			</div> 
+		</div>
+	</div>
+  
+</div>
+<div style="clear: both; height: 5em"></div>    
+{% endblock %}

@@ -1,0 +1,53 @@
+{% extends "template.html" %} 
+{% block JS %}
+<script type="text/javascript"> 
+	jQuery(document).ready(function(){   
+         $(".loading-icon").hide();
+          
+	});  
+</script>
+{% endblock %}
+{% block filter %} 
+ <div > 
+ 
+   <div class="form-group">
+        <label class="col-xs-12 control-label  mnv-date-range" >Periode</label>
+        <div class="col-xs-6" style="padding-left: 15px; padding-right: 5px" >{{ inputStartDate|raw }}</div>
+        <div class="col-xs-6" style="padding-left: 5px; padding-right:15px"  >{{ inputEndDate|raw }}</div> 
+    </div>
+   <div class="form-group">
+        <label class="col-xs-12 control-label" >Kode</label>
+        <div class="col-xs-12"  > {{ inputItemCode|raw }}</div> 
+    </div>
+   <div class="form-group">
+        <label class="col-xs-12 control-label" >Nama</label>
+        <div class="col-xs-12"  > {{ inputItemName|raw }}</div> 
+    </div>
+      
+    <div class="form-group">
+        <label class="col-xs-12 control-label" >Kategori</label>
+        <div class="col-xs-12"  > {{ inputSelCategory|raw }}</div> 
+    </div> 
+    <div class="form-group">
+        <label class="col-xs-12 control-label" >Merk</label>
+        <div class="col-xs-12"  > {{ inputSelBrand|raw }}</div> 
+    </div>  
+	 
+     <div class="form-group">
+        <label class="col-xs-12 control-label" >Gudang</label>
+        <div class="col-xs-12"  > {{ inputSelWarehouse|raw }}</div> 
+    </div> 
+     <div class="form-group">
+        <label class="col-xs-12 control-label" >Status</label>
+        <div class="col-xs-12"  > {{ inputSelStatus|raw }}</div> 
+    </div> 
+      
+    <div class="form-group" style="margin-bottom:0">
+        <label class="col-xs-12 control-label" >{{ LANG.others }}</label> 
+    </div> 
+    <div class="form-group">  
+        <div class="col-xs-12"> {{ inputShowDetail|raw }} <span style="margin-left: 5px">Detail</span></div>
+    </div> 
+    
+ </div>	 
+{% endblock %}
